@@ -1,0 +1,1591 @@
+<!doctype html>
+<html lang="id">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="color-scheme" content="light" />
+    <link rel="icon" href="data:," />
+    <title>WARIS! Kalkulator Waris Islam</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,600;9..144,700;9..144,900&family=Inter:wght@400;500;600;700&family=Amiri:wght@400;700&display=swap" rel="stylesheet" />
+    <style>
+      :root{
+        --paper:#FAF6EF;
+        --surface:#FFFDF8;
+        --emerald:#0B3D2E;
+        --emerald-hover:#0E4D39;
+        --emerald-soft:#E3EDE6;
+        --gold:#B98A1F;
+        --gold-soft:#F3E9CF;
+        --ink:#1C2B23;
+        --ink-soft:#43534A;
+        --sage:#6B7F72;
+        --sage-text:#4E6355;
+        --sage-light:#9DB4A4;
+        --line:#E3DAC3;
+        --brown:#C4A484;
+        --brown-dark:#A9835A;
+        --purple:#9B8AC4;
+        --purple-dark:#7E6FA8;
+        --danger:#9C3324;
+        --danger-bg:#F9E9E4;
+        --green-mid:#2F7D5B;
+        --radius:14px;
+      }
+      *,*::before,*::after{ box-sizing:border-box; }
+      html{ scroll-behavior:smooth; }
+      body{
+        margin:0;
+        background:var(--paper);
+        color:var(--ink);
+        font-family:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;
+        font-size:16px;
+        line-height:1.55;
+        -webkit-font-smoothing:antialiased;
+      }
+      ::selection{ background:var(--gold); color:#fff; }
+      :focus-visible{ outline:3px solid var(--emerald); outline-offset:2px; border-radius:6px; }
+      button,[role="button"],select,summary,input:not([type="checkbox"]){ min-height:2.25rem; }
+      .tnum{ font-variant-numeric:tabular-nums; }
+
+      /* ---------- Header ---------- */
+      .site-header{ background:var(--emerald); color:#F5EFE0; }
+      .pattern-band{ height:44px; line-height:0; }
+      .pattern-band svg{ width:100%; height:44px; display:block; }
+      .header-inner{ max-width:640px; margin:0 auto; padding:22px 20px 26px; text-align:center; }
+      .arabic{
+        font-family:"Amiri",serif; font-size:1.45rem; line-height:2; color:#EBD9A0;
+        margin:0 0 6px; direction:rtl;
+      }
+      .arabic-src{ font-size:.8rem; color:#BFD3C6; margin:0 0 14px; }
+      h1.brand{
+        font-family:"Fraunces",serif; font-weight:900; font-size:3rem; letter-spacing:.01em;
+        margin:0; color:#FFFDF8; line-height:1.05;
+      }
+      h1.brand .bang{ color:var(--gold); }
+      .subtitle{ margin:8px 0 0; font-size:1rem; color:#DCE8DE; font-weight:500; }
+      .basis{ margin:10px 0 0; font-size:.83rem; color:#A9C2B0; }
+      .disclaimer-strip{
+        max-width:640px; margin:0 auto; padding:0 20px 20px;
+      }
+      .disclaimer-box{
+        background:rgba(185,138,31,.16); border:1px solid rgba(185,138,31,.55);
+        border-radius:10px; padding:10px 14px; font-size:.86rem; color:#F3E9CF; text-align:center;
+      }
+      .disclaimer-box strong{ color:#EBD9A0; }
+
+      /* ---------- Layout ---------- */
+      .wrap{ max-width:640px; margin:0 auto; padding:0 16px 40px; }
+
+      /* ---------- Tabs ---------- */
+      .tabbar{
+        display:flex; gap:6px; margin:18px 0 18px; background:var(--surface);
+        border:1px solid var(--line); border-radius:12px; padding:5px;
+      }
+      .tab-btn{
+        flex:1 1 0; appearance:none; border:0; background:transparent; cursor:pointer;
+        font:inherit; font-weight:600; font-size:.9rem; color:var(--ink-soft);
+        padding:9px 4px; border-radius:8px; min-height:44px;
+        transition:background .15s ease,color .15s ease;
+      }
+      .tab-btn:hover{ background:var(--emerald-soft); }
+      .tab-btn[aria-selected="true"]{ background:var(--emerald); color:#FFFDF8; }
+      .tab-panel[hidden]{ display:none; }
+
+      /* ---------- Cards & forms ---------- */
+      .card{
+        background:var(--surface); border:1px solid var(--line); border-radius:var(--radius);
+        padding:18px; margin:0 0 16px;
+      }
+      .card h2{
+        font-family:"Fraunces",serif; font-weight:700; font-size:1.28rem; margin:0 0 4px; color:var(--emerald);
+      }
+      .card .card-sub{ margin:0 0 14px; font-size:.88rem; color:var(--ink-soft); }
+      .field{ margin:0 0 14px; }
+      .field:last-child{ margin-bottom:0; }
+      label.f-label{ display:block; font-weight:600; font-size:.92rem; margin:0 0 6px; }
+      .f-hint{ font-size:.82rem; color:var(--sage-text); margin:5px 0 0; }
+      input[type="text"]{
+        width:100%; font:inherit; color:var(--ink); background:#fff;
+        border:1.5px solid var(--line); border-radius:10px; padding:10px 12px;
+      }
+      input[type="text"]:focus{ border-color:var(--emerald); outline:none; box-shadow:0 0 0 3px rgba(11,61,46,.18); }
+      .money-input{ position:relative; }
+      .money-input .rp{
+        position:absolute; left:12px; top:50%; transform:translateY(-50%);
+        font-weight:600; color:var(--sage-text); pointer-events:none;
+      }
+      .money-input input{ padding-left:42px; font-variant-numeric:tabular-nums; }
+
+      .segmented{ display:flex; gap:8px; }
+      .seg-btn{
+        flex:1; appearance:none; cursor:pointer; font:inherit; font-weight:600;
+        border:1.5px solid var(--line); background:#fff; color:var(--ink-soft);
+        border-radius:10px; padding:10px; min-height:46px; transition:all .15s ease;
+      }
+      .seg-btn:hover{ border-color:var(--sage); }
+      .seg-btn[aria-pressed="true"]{ background:var(--emerald); border-color:var(--emerald); color:#FFFDF8; }
+
+      .toggle-row{ display:flex; align-items:flex-start; gap:12px; padding:12px 0 2px; }
+      .toggle-row .t-text{ flex:1; }
+      .toggle-row .t-title{ font-weight:600; font-size:.95rem; }
+      .toggle-row .t-desc{ font-size:.84rem; color:var(--ink-soft); margin-top:2px; }
+      .switch{ flex:none; margin-top:2px; line-height:0; display:block; }
+      .switch input{
+        appearance:none; -webkit-appearance:none; display:block; width:56px; height:36px; margin:0;
+        border-radius:999px; background:#CBD5CB; cursor:pointer; position:relative;
+        transition:background .18s ease; border:0;
+      }
+      .switch input::after{
+        content:""; position:absolute; top:4px; left:4px; width:28px; height:28px; border-radius:50%;
+        background:#fff; box-shadow:0 1px 3px rgba(0,0,0,.25); transition:left .18s ease;
+      }
+      .switch input:checked{ background:var(--emerald); }
+      .switch input:checked::after{ left:24px; }
+      .switch input:focus-visible{ outline:3px solid var(--emerald); outline-offset:2px; }
+
+      .warn{
+        display:none; margin-top:10px; background:var(--danger-bg); color:var(--danger);
+        border:1px solid #E3B7AC; border-radius:10px; padding:9px 12px; font-size:.87rem; font-weight:500;
+      }
+      .warn.show{ display:block; }
+
+      /* Waterfall */
+      .waterfall{ margin-top:16px; border-top:1px dashed var(--line); padding-top:12px; }
+      .waterfall h3{ font-size:.85rem; font-weight:700; letter-spacing:.02em; color:var(--sage-text); margin:0 0 8px; text-transform:uppercase; }
+      .wf-row{ display:flex; justify-content:space-between; gap:12px; padding:4px 0; font-size:.94rem; }
+      .wf-row .wf-amt{ font-variant-numeric:tabular-nums; font-weight:500; white-space:nowrap; }
+      .wf-row.minus .wf-amt{ color:var(--danger); }
+      .wf-row.net{
+        border-top:2px solid var(--emerald); margin-top:8px; padding-top:10px;
+        font-weight:700; color:var(--emerald); font-size:1.02rem;
+      }
+      .wf-row.net .wf-amt{ font-family:"Fraunces",serif; font-size:1.15rem; }
+
+      /* Steppers */
+      .stepper-row{
+        display:flex; align-items:center; justify-content:space-between; gap:12px;
+        padding:9px 0; border-bottom:1px solid #EFE8D5;
+      }
+      .stepper-row:last-child{ border-bottom:0; }
+      .stepper-label{ font-size:.96rem; font-weight:500; }
+      .stepper-label .sub{ display:block; font-size:.8rem; color:var(--sage-text); font-weight:400; }
+      .stepper{ display:flex; align-items:center; gap:6px; flex:none; }
+      .step-btn{
+        width:42px; height:42px; border-radius:50%; border:1.5px solid var(--emerald);
+        background:#fff; color:var(--emerald); font-size:1.3rem; font-weight:600; cursor:pointer;
+        display:flex; align-items:center; justify-content:center; line-height:1; padding:0;
+        transition:background .15s ease,color .15s ease;
+      }
+      .step-btn:hover:not(:disabled){ background:var(--emerald); color:#fff; }
+      .step-btn:disabled{ opacity:.32; cursor:not-allowed; }
+      .step-val{ min-width:30px; text-align:center; font-weight:700; font-size:1.05rem; font-variant-numeric:tabular-nums; }
+
+      /* Replacement rows */
+      .repl-row{ border:1px solid var(--line); border-radius:12px; padding:12px; margin:0 0 12px; background:#FFFEFA; }
+      .repl-head{ display:flex; gap:8px; align-items:stretch; margin-bottom:6px; }
+      .repl-head select{
+        flex:1; font:inherit; font-size:.92rem; padding:9px 10px; border:1.5px solid var(--line);
+        border-radius:10px; background:#fff; color:var(--ink); min-height:44px;
+      }
+      .btn-del{
+        flex:none; border:1.5px solid #E3B7AC; background:#fff; color:var(--danger); cursor:pointer;
+        border-radius:10px; font:inherit; font-weight:600; font-size:.86rem; padding:8px 12px; min-height:44px;
+      }
+      .btn-del:hover{ background:var(--danger-bg); }
+      .repl-grid{ display:flex; gap:16px; flex-wrap:wrap; }
+      .repl-cell{ display:flex; align-items:center; gap:8px; }
+      .repl-cell .rc-label{ font-size:.88rem; font-weight:500; }
+      .repl-cell .step-btn{ width:38px; height:38px; font-size:1.15rem; }
+      .repl-cell .step-val{ min-width:24px; font-size:1rem; }
+
+      .btn{
+        appearance:none; cursor:pointer; font:inherit; font-weight:600; border-radius:11px;
+        border:1.5px solid var(--emerald); padding:11px 18px; min-height:48px;
+        transition:background .15s ease,color .15s ease,border-color .15s ease;
+      }
+      .btn-primary{ background:var(--emerald); color:#FFFDF8; width:100%; font-size:1.02rem; }
+      .btn-primary:hover:not(:disabled){ background:var(--emerald-hover); }
+      .btn-primary:disabled{ background:#B9C4BB; border-color:#B9C4BB; cursor:not-allowed; }
+      .btn-ghost{ background:#fff; color:var(--emerald); }
+      .btn-ghost:hover{ background:var(--emerald-soft); }
+      .btn-add{ width:100%; border-style:dashed; color:var(--emerald); background:#fff; }
+      .btn-add:hover{ background:var(--emerald-soft); }
+
+      .stickybar{
+        position:sticky; bottom:10px; z-index:20; margin:4px 0 18px;
+        background:var(--surface); border:1px solid var(--line); border-radius:14px;
+        padding:12px; box-shadow:0 8px 24px rgba(28,43,35,.16);
+      }
+      .stickybar .hint{ font-size:.85rem; color:var(--danger); font-weight:500; margin:8px 2px 0; display:none; }
+      .stickybar .hint.show{ display:block; }
+
+      /* ---------- Results ---------- */
+      #hasil[hidden]{ display:none; }
+      .hasil-net{
+        text-align:center; padding:8px 0 4px;
+      }
+      .hasil-net .hn-label{ font-size:.88rem; color:var(--ink-soft); font-weight:600; }
+      .hasil-net .hn-amt{
+        font-family:"Fraunces",serif; font-weight:900; color:var(--emerald);
+        font-size:2.1rem; line-height:1.15; font-variant-numeric:tabular-nums;
+      }
+      .badges{ display:flex; flex-wrap:wrap; gap:7px; margin:12px 0 4px; }
+      .badge{
+        font-size:.8rem; font-weight:700; padding:5px 11px; border-radius:999px;
+        background:var(--gold-soft); color:#7A5A10; border:1px solid #DEC887;
+      }
+      .badge.green{ background:var(--emerald-soft); color:var(--emerald); border-color:#B9CDBD; }
+      .badge.grey{ background:#EDEBE4; color:#5C665E; border-color:#D8D4C6; }
+
+      .distbar{
+        display:flex; width:100%; height:30px; border-radius:9px; overflow:hidden;
+        background:#EFE9D8; margin:14px 0 8px;
+      }
+      .distbar .seg{ height:100%; width:0; transition:width .7s ease-out; }
+      .legend{ list-style:none; margin:6px 0 0; padding:0; }
+      .legend li{ display:flex; align-items:center; gap:8px; font-size:.86rem; padding:2.5px 0; color:var(--ink-soft); }
+      .legend .dot{ width:12px; height:12px; border-radius:4px; flex:none; }
+      .legend .lg-amt{ margin-left:auto; font-variant-numeric:tabular-nums; font-weight:600; color:var(--ink); white-space:nowrap; }
+
+      .res-group-title{
+        font-family:"Fraunces",serif; font-weight:700; font-size:1.05rem; color:var(--emerald);
+        margin:20px 0 8px;
+      }
+      .res-row{
+        border:1px solid var(--line); border-radius:12px; padding:12px 14px; margin:0 0 9px; background:#FFFEFA;
+      }
+      .res-row.blocked{ opacity:.62; background:#F4F1E8; }
+      .res-top{ display:flex; align-items:baseline; justify-content:space-between; gap:10px; }
+      .res-name{ font-weight:700; font-size:1rem; }
+      .res-name .cnt{ font-weight:500; color:var(--sage-text); font-size:.88rem; }
+      .res-total{ font-family:"Fraunces",serif; font-weight:700; font-size:1.12rem; color:var(--emerald); font-variant-numeric:tabular-nums; white-space:nowrap; }
+      .res-row.blocked .res-total{ color:var(--ink-soft); font-family:"Inter",sans-serif; font-size:.95rem; }
+      .res-meta{ display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:5px; font-size:.88rem; color:var(--ink-soft); font-variant-numeric:tabular-nums; }
+      .res-meta .frac{ font-weight:600; color:var(--ink); }
+      .res-note{ margin-top:5px; font-size:.85rem; color:var(--sage-text); font-style:italic; }
+      .res-row.blocked .res-note{ color:var(--danger); font-style:normal; font-weight:500; }
+
+      .baitulmal{
+        background:var(--gold-soft); border:1px solid #DEC887; border-radius:12px;
+        padding:14px 16px; font-size:.95rem; margin:14px 0;
+      }
+
+      details.cara{ border:1px solid var(--line); border-radius:12px; margin-top:16px; background:#FFFEFA; }
+      details.cara summary{
+        cursor:pointer; font-weight:700; padding:13px 16px; color:var(--emerald); font-size:.98rem; list-style-position:inside;
+      }
+      details.cara ol{ margin:0; padding:0 18px 16px 38px; }
+      details.cara li{ margin:0 0 9px; font-size:.92rem; }
+      details.cara li .dalil{ color:var(--sage-text); font-size:.85rem; }
+
+      .hasil-actions{ display:flex; flex-wrap:wrap; gap:9px; margin-top:18px; }
+      .hasil-actions .btn{ flex:1 1 150px; }
+
+      /* ---------- Presets ---------- */
+      .preset-card{ text-align:left; width:100%; cursor:pointer; font:inherit; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:18px; margin:0 0 14px; display:block; color:var(--ink); transition:border-color .15s ease, box-shadow .15s ease; }
+      .preset-card:hover{ border-color:var(--gold); box-shadow:0 4px 16px rgba(28,43,35,.10); }
+      .preset-card h3{ font-family:"Fraunces",serif; font-size:1.18rem; margin:0 0 6px; color:var(--emerald); }
+      .preset-card p{ margin:0 0 8px; font-size:.92rem; color:var(--ink-soft); }
+      .preset-card .p-total{ font-weight:700; color:var(--ink); font-variant-numeric:tabular-nums; }
+      .preset-card .p-cta{ display:inline-block; margin-top:8px; font-weight:700; color:var(--gold); font-size:.9rem; }
+
+      /* ---------- Pelajari ---------- */
+      .learn h2{ font-family:"Fraunces",serif; color:var(--emerald); font-size:1.3rem; margin:22px 0 10px; }
+      .learn h2:first-child{ margin-top:4px; }
+      .learn p{ margin:0 0 10px; }
+      .learn table{ width:100%; border-collapse:collapse; font-size:.92rem; margin:0 0 8px; }
+      .learn th{ text-align:left; background:var(--emerald); color:#FFFDF8; padding:9px 11px; font-weight:600; }
+      .learn th:first-child{ border-radius:9px 0 0 0; } .learn th:last-child{ border-radius:0 9px 0 0; }
+      .learn td{ padding:8px 11px; border-bottom:1px solid #EFE8D5; vertical-align:top; }
+      .learn td.frac{ font-weight:700; font-variant-numeric:tabular-nums; white-space:nowrap; color:var(--emerald); }
+      .learn ol,.learn ul{ margin:0 0 10px; padding-left:22px; }
+      .learn li{ margin:0 0 6px; }
+      .learn dl{ margin:0; }
+      .learn dt{ font-weight:700; color:var(--emerald); margin-top:12px; }
+      .learn dt:first-child{ margin-top:0; }
+      .learn dd{ margin:2px 0 0; color:var(--ink-soft); }
+      .learn .note-box{ background:var(--gold-soft); border:1px solid #DEC887; border-radius:12px; padding:14px 16px; margin-top:14px; }
+      .learn .note-box p:last-child{ margin-bottom:0; }
+
+      /* ---------- Riwayat ---------- */
+      .hist-item{ border:1px solid var(--line); border-radius:12px; padding:14px 16px; margin:0 0 11px; background:#FFFEFA; }
+      .hist-item .hi-name{ font-weight:700; font-size:1rem; }
+      .hist-item .hi-meta{ font-size:.86rem; color:var(--ink-soft); margin-top:3px; font-variant-numeric:tabular-nums; }
+      .hist-item .hi-actions{ display:flex; gap:8px; margin-top:11px; }
+      .hist-item .btn{ min-height:44px; padding:8px 16px; font-size:.9rem; }
+      .empty-state{ text-align:center; color:var(--ink-soft); padding:28px 12px; font-size:.97rem; }
+
+      /* ---------- Footer / toast / modal ---------- */
+      footer.site{ max-width:640px; margin:0 auto; padding:6px 20px 34px; text-align:center; color:var(--sage-text); font-size:.83rem; }
+      footer.site p{ margin:0 0 6px; }
+      #selftest-fail{ display:none; color:var(--danger); font-weight:700; }
+      .toast{
+        position:fixed; left:50%; bottom:26px; transform:translate(-50%,20px); z-index:60;
+        background:var(--emerald); color:#FFFDF8; font-weight:600; font-size:.93rem;
+        padding:12px 22px; border-radius:999px; box-shadow:0 10px 28px rgba(11,61,46,.35);
+        opacity:0; pointer-events:none; transition:opacity .25s ease, transform .25s ease;
+      }
+      .toast.show{ opacity:1; transform:translate(-50%,0); }
+      .modal-overlay{
+        position:fixed; inset:0; background:rgba(28,43,35,.5); z-index:50;
+        display:none; align-items:flex-end; justify-content:center; padding:16px;
+      }
+      .modal-overlay.open{ display:flex; }
+      .modal{
+        background:var(--surface); border-radius:16px; padding:20px; width:100%; max-width:480px;
+        box-shadow:0 18px 44px rgba(0,0,0,.3);
+      }
+      .modal h3{ font-family:"Fraunces",serif; color:var(--emerald); margin:0 0 6px; font-size:1.2rem; }
+      .modal p{ margin:0 0 12px; font-size:.9rem; color:var(--ink-soft); }
+      .modal .m-actions{ display:flex; gap:9px; margin-top:14px; }
+      .modal .m-actions .btn{ flex:1; }
+
+      @media (min-width:560px){
+        h1.brand{ font-size:3.4rem; }
+        .hasil-net .hn-amt{ font-size:2.5rem; }
+      }
+      @media (prefers-reduced-motion: reduce){
+        html{ scroll-behavior:auto; }
+        .distbar .seg{ transition:none; }
+        *{ transition-duration:.01ms !important; }
+      }
+
+      /* ---------- Print: hanya ringkasan hasil ---------- */
+      @media print{
+        body{ background:#fff; }
+        .site-header .pattern-band, .tabbar, .formzone, .stickybar,
+        #panel-contoh, #panel-pelajari, #panel-riwayat,
+        footer.site, .toast, .modal-overlay, .hasil-actions, details.cara, .no-print{ display:none !important; }
+        .site-header{ background:#fff; color:var(--ink); }
+        .header-inner{ padding:8px 0 4px; }
+        h1.brand{ color:var(--emerald); font-size:2rem; }
+        .subtitle,.basis{ color:var(--ink-soft); }
+        .arabic{ color:var(--emerald); }
+        .arabic-src{ color:var(--ink-soft); }
+        .disclaimer-box{ background:#fff; color:var(--ink); border-color:#999; }
+        .disclaimer-box strong{ color:var(--ink); }
+        .wrap{ padding:0; max-width:100%; }
+        .card{ border:0; padding:0; }
+        #hasil{ page-break-inside:avoid; }
+      }
+    </style>
+  </head>
+  <body>
+
+    <header class="site-header">
+      <div class="pattern-band" aria-hidden="true">
+        <svg preserveAspectRatio="none" viewBox="0 0 1200 44" xmlns="http://www.w3.org/2000/svg">
+          <defs>
+            <pattern id="starpat" width="52" height="44" patternUnits="userSpaceOnUse">
+              <g fill="none" stroke="#B98A1F" stroke-width="1.3" opacity="0.6">
+                <rect x="17" y="12" width="18" height="18"/>
+                <rect x="17" y="12" width="18" height="18" transform="rotate(45 26 21)"/>
+                <circle cx="26" cy="21" r="2.4"/>
+                <circle cx="0" cy="0" r="2"/>
+                <circle cx="52" cy="0" r="2"/>
+                <circle cx="0" cy="44" r="2"/>
+                <circle cx="52" cy="44" r="2"/>
+              </g>
+            </pattern>
+          </defs>
+          <rect width="1200" height="44" fill="#0B3D2E"/>
+          <rect width="1200" height="44" fill="url(#starpat)"/>
+        </svg>
+      </div>
+      <div class="header-inner">
+        <p class="arabic" lang="ar">يُوصِيكُمُ اللَّهُ فِي أَوْلَادِكُمْ ۖ لِلذَّكَرِ مِثْلُ حَظِّ الْأُنْثَيَيْنِ</p>
+        <p class="arabic-src">&ldquo;Allah mensyariatkan kepadamu tentang (pembagian warisan untuk) anak-anakmu&hellip;&rdquo; — QS An-Nisa ayat 11</p>
+        <h1 class="brand">WARIS<span class="bang">!</span></h1>
+        <p class="subtitle">Kalkulator Waris Islam — Faraid menurut Al-Qur&rsquo;an &amp; KHI</p>
+        <p class="basis">Dasar hukum: QS An-Nisa ayat 11, 12, dan 176 &middot; Kompilasi Hukum Islam (KHI) Buku II Pasal 176–193</p>
+      </div>
+      <div class="disclaimer-strip">
+        <div class="disclaimer-box"><strong>Alat edukasi.</strong> WARIS! membantu mempelajari dan memperkirakan pembagian waris menurut ilmu faraid. Hasilnya <strong>bukan fatwa dan bukan putusan pengadilan</strong>. Untuk penetapan resmi, konsultasikan ke Pengadilan Agama atau ustaz yang berkompeten.</div>
+      </div>
+    </header>
+
+    <div class="wrap">
+      <nav class="tabbar" role="tablist" aria-label="Menu utama">
+        <button type="button" class="tab-btn" role="tab" id="tabbtn-kalkulator" aria-selected="true" aria-controls="panel-kalkulator" data-tab="kalkulator">Kalkulator</button>
+        <button type="button" class="tab-btn" role="tab" id="tabbtn-contoh" aria-selected="false" aria-controls="panel-contoh" data-tab="contoh">Contoh Kasus</button>
+        <button type="button" class="tab-btn" role="tab" id="tabbtn-pelajari" aria-selected="false" aria-controls="panel-pelajari" data-tab="pelajari">Pelajari</button>
+        <button type="button" class="tab-btn" role="tab" id="tabbtn-riwayat" aria-selected="false" aria-controls="panel-riwayat" data-tab="riwayat">Riwayat</button>
+      </nav>
+
+      <!-- ============ TAB 1: KALKULATOR ============ -->
+      <section class="tab-panel" id="panel-kalkulator" role="tabpanel" aria-labelledby="tabbtn-kalkulator">
+        <div class="formzone">
+          <div class="card">
+            <h2>A. Pewaris</h2>
+            <p class="card-sub">Orang yang meninggal dan meninggalkan harta.</p>
+            <div class="field">
+              <label class="f-label" for="inp-nama">Nama pewaris <span style="font-weight:400;color:var(--sage-text)">(opsional)</span></label>
+              <input type="text" id="inp-nama" placeholder="cth. H. Ahmad bin Yusuf" autocomplete="off" />
+            </div>
+            <div class="field">
+              <span class="f-label" id="lbl-gender">Jenis kelamin pewaris</span>
+              <div class="segmented" role="group" aria-labelledby="lbl-gender">
+                <button type="button" class="seg-btn" id="gender-L" aria-pressed="true">Laki-laki</button>
+                <button type="button" class="seg-btn" id="gender-P" aria-pressed="false">Perempuan</button>
+              </div>
+              <p class="f-hint">Menentukan sebutan pasangan: pewaris laki-laki meninggalkan istri; pewaris perempuan meninggalkan suami.</p>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>B. Harta</h2>
+            <p class="card-sub">Seluruh harta peninggalan sebelum dibagi. Isi dalam Rupiah.</p>
+            <div class="field">
+              <label class="f-label" for="inp-total">Total harta peninggalan</label>
+              <div class="money-input"><span class="rp">Rp</span><input type="text" id="inp-total" inputmode="numeric" placeholder="0" autocomplete="off" /></div>
+            </div>
+            <div class="field">
+              <label class="f-label" for="inp-makam">Biaya pemakaman &amp; pengurusan jenazah</label>
+              <div class="money-input"><span class="rp">Rp</span><input type="text" id="inp-makam" inputmode="numeric" placeholder="0" autocomplete="off" /></div>
+            </div>
+            <div class="field">
+              <label class="f-label" for="inp-utang">Utang pewaris</label>
+              <div class="money-input"><span class="rp">Rp</span><input type="text" id="inp-utang" inputmode="numeric" placeholder="0" autocomplete="off" /></div>
+            </div>
+            <div class="field">
+              <label class="f-label" for="inp-wasiat">Wasiat (untuk non-ahli waris)</label>
+              <div class="money-input"><span class="rp">Rp</span><input type="text" id="inp-wasiat" inputmode="numeric" placeholder="0" autocomplete="off" /></div>
+              <p class="f-hint">Wasiat berlaku maksimal 1/3 dari sisa harta setelah biaya pemakaman dan utang.</p>
+              <div class="warn" id="wasiat-warn" role="alert"></div>
+            </div>
+            <div class="toggle-row">
+              <div class="t-text">
+                <div class="t-title">Harta bersama (gono-gini)</div>
+                <div class="t-desc">Bila aktif dan pasangan masih hidup, 50% total harta dipisahkan sebagai hak pasangan sebelum potongan lain dihitung.</div>
+              </div>
+              <label class="switch">
+                <input type="checkbox" id="inp-gono" aria-label="Aktifkan harta bersama (gono-gini)" />
+              </label>
+            </div>
+            <div class="waterfall" aria-live="polite">
+              <h3>Ringkasan harta — diperbarui langsung</h3>
+              <div id="wf-live"></div>
+            </div>
+          </div>
+
+          <div class="card">
+            <h2>C. Ahli Waris</h2>
+            <p class="card-sub">Isi jumlah setiap ahli waris yang masih hidup saat pewaris wafat.</p>
+            <div id="steppers"></div>
+          </div>
+
+          <div class="card">
+            <h2>D. Ahli Waris Pengganti</h2>
+            <p class="card-sub">Menurut KHI Pasal 185, anak yang telah meninggal sebelum pewaris dapat digantikan oleh anak-anaknya (cucu pewaris). Tambahkan satu baris untuk setiap anak yang telah meninggal.</p>
+            <div id="repl-list"></div>
+            <button type="button" class="btn btn-add" id="btn-add-repl">+ Tambah anak yang telah meninggal</button>
+          </div>
+        </div>
+
+        <div class="stickybar">
+          <button type="button" class="btn btn-primary" id="btn-hitung">Hitung Pembagian</button>
+          <p class="hint" id="hitung-hint"></p>
+        </div>
+
+        <section id="hasil" hidden aria-live="polite"></section>
+      </section>
+
+      <!-- ============ TAB 2: CONTOH KASUS ============ -->
+      <section class="tab-panel" id="panel-contoh" role="tabpanel" aria-labelledby="tabbtn-contoh" hidden>
+        <button type="button" class="preset-card" data-preset="inti">
+          <h3>Keluarga inti</h3>
+          <p>Pewaris laki-laki meninggalkan istri, 2 anak laki-laki, dan 1 anak perempuan. Istri mendapat 1/8, sisanya dibagi anak-anak sebagai asabah dengan rasio 2 : 1.</p>
+          <span class="p-total">Total harta: Rp 240.000.000</span><br />
+          <span class="p-cta">Gunakan kasus ini &rarr;</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="gharawain">
+          <h3>Tanpa anak (gharawain)</h3>
+          <p>Pewaris perempuan meninggalkan suami, ayah, dan ibu, tanpa anak. Kasus khusus gharawain: ibu mendapat 1/3 dari sisa setelah bagian suami, ayah menerima sisanya.</p>
+          <span class="p-total">Total harta: Rp 120.000.000</span><br />
+          <span class="p-cta">Gunakan kasus ini &rarr;</span>
+        </button>
+        <button type="button" class="preset-card" data-preset="awl">
+          <h3>Kasus &rsquo;awl</h3>
+          <p>Pewaris laki-laki meninggalkan istri, ayah, ibu, dan 2 anak perempuan. Jumlah bagian tetap melebihi harta (27/24), sehingga semua bagian dikecilkan secara proporsional menurut KHI Pasal 192.</p>
+          <span class="p-total">Total harta: Rp 270.000.000</span><br />
+          <span class="p-cta">Gunakan kasus ini &rarr;</span>
+        </button>
+      </section>
+
+      <!-- ============ TAB 3: PELAJARI ============ -->
+      <section class="tab-panel learn" id="panel-pelajari" role="tabpanel" aria-labelledby="tabbtn-pelajari" hidden>
+        <div class="card">
+          <h2>Bagian Setiap Ahli Waris</h2>
+          <p>Bagian tetap (fard) berikut berlaku bila syaratnya terpenuhi dan ahli waris tidak terhalang (hijab). Sisa harta setelah semua bagian tetap dibagikan jatuh kepada asabah.</p>
+          <table>
+            <thead><tr><th>Ahli waris</th><th>Bagian</th><th>Syarat</th></tr></thead>
+            <tbody>
+              <tr><td>Suami</td><td class="frac">1/2</td><td>Tidak ada anak/cucu</td></tr>
+              <tr><td>Suami</td><td class="frac">1/4</td><td>Ada anak/cucu</td></tr>
+              <tr><td>Istri</td><td class="frac">1/4</td><td>Tidak ada anak/cucu</td></tr>
+              <tr><td>Istri</td><td class="frac">1/8</td><td>Ada anak/cucu (dibagi rata bila istri lebih dari satu)</td></tr>
+              <tr><td>Anak perempuan</td><td class="frac">1/2</td><td>Tunggal, tanpa anak laki-laki</td></tr>
+              <tr><td>Anak perempuan</td><td class="frac">2/3</td><td>Dua orang atau lebih, tanpa anak laki-laki</td></tr>
+              <tr><td>Anak laki-laki</td><td class="frac">Sisa</td><td>Asabah — menerima sisa, berbagi 2 : 1 dengan anak perempuan</td></tr>
+              <tr><td>Ayah</td><td class="frac">1/6</td><td>Ada anak/cucu; ditambah sisa bila hanya ada anak perempuan</td></tr>
+              <tr><td>Ibu</td><td class="frac">1/6</td><td>Ada anak/cucu, atau saudara pewaris dua orang atau lebih</td></tr>
+              <tr><td>Ibu</td><td class="frac">1/3</td><td>Tidak ada anak/cucu dan saudara kurang dari dua</td></tr>
+              <tr><td>Kakek (ayah dari ayah)</td><td class="frac">1/6 / sisa</td><td>Diperlakukan seperti ayah, bila ayah telah tiada</td></tr>
+              <tr><td>Nenek</td><td class="frac">1/6</td><td>Bila ibu telah tiada (dibagi rata bila dua nenek)</td></tr>
+              <tr><td>Saudara kandung perempuan</td><td class="frac">1/2</td><td>Tunggal, tanpa anak, ayah, kakek, dan saudara kandung laki-laki</td></tr>
+              <tr><td>Saudara kandung perempuan</td><td class="frac">2/3</td><td>Dua orang atau lebih, syarat sama seperti di atas</td></tr>
+              <tr><td>Saudara seayah perempuan</td><td class="frac">1/2 / 2/3</td><td>Bila tidak ada saudara kandung perempuan; 1/6 bila ada tepat satu saudara kandung perempuan</td></tr>
+              <tr><td>Saudara seibu</td><td class="frac">1/6</td><td>Tunggal, tanpa anak/cucu, ayah, dan kakek</td></tr>
+              <tr><td>Saudara seibu</td><td class="frac">1/3</td><td>Dua orang atau lebih, dibagi rata tanpa membedakan laki-laki/perempuan</td></tr>
+            </tbody>
+          </table>
+
+          <h2>Urutan Penyelesaian Harta</h2>
+          <ol>
+            <li><strong>Pisahkan harta bersama (gono-gini)</strong> — separuh harta bersama adalah hak pasangan yang masih hidup, bukan harta warisan.</li>
+            <li><strong>Biaya pemakaman</strong> dan pengurusan jenazah pewaris.</li>
+            <li><strong>Utang</strong> pewaris dilunasi.</li>
+            <li><strong>Wasiat</strong> ditunaikan, maksimal 1/3 dari sisa harta, untuk pihak yang bukan ahli waris.</li>
+            <li><strong>Baru kemudian warisan dibagi</strong> kepada ahli waris menurut faraid.</li>
+          </ol>
+
+          <h2>Glosarium</h2>
+          <dl>
+            <dt>Dzawil furud</dt>
+            <dd>Ahli waris yang bagiannya telah ditetapkan secara pasti dalam Al-Qur&rsquo;an, seperti 1/2, 1/4, 1/8, 2/3, 1/3, dan 1/6.</dd>
+            <dt>Asabah</dt>
+            <dd>Ahli waris penerima sisa harta setelah dzawil furud menerima bagiannya — yang terdekat adalah anak laki-laki, lalu ayah, kakek, dan saudara laki-laki.</dd>
+            <dt>&rsquo;Awl</dt>
+            <dd>Keadaan ketika jumlah seluruh bagian tetap melebihi harta yang tersedia, sehingga setiap bagian dikecilkan secara proporsional (KHI Pasal 192).</dd>
+            <dt>Radd</dt>
+            <dd>Keadaan ketika masih ada sisa harta setelah bagian tetap dibagikan dan tidak ada asabah; sisa dikembalikan secara proporsional kepada dzawil furud selain pasangan (KHI Pasal 193).</dd>
+            <dt>Hijab</dt>
+            <dd>Terhalangnya seorang ahli waris karena ada ahli waris lain yang lebih dekat — misalnya saudara terhalang oleh anak laki-laki dan ayah; kakek terhalang oleh ayah; nenek terhalang oleh ibu.</dd>
+            <dt>Gono-gini (harta bersama)</dt>
+            <dd>Harta yang diperoleh selama perkawinan; separuhnya milik pasangan yang masih hidup dan tidak ikut dibagi sebagai warisan.</dd>
+            <dt>Wasiat</dt>
+            <dd>Pesan pewaris untuk memberikan sebagian harta kepada pihak tertentu setelah ia wafat; berlaku maksimal 1/3 harta dan tidak untuk ahli waris.</dd>
+            <dt>Ahli waris pengganti</dt>
+            <dd>Cucu yang menggantikan kedudukan ayah/ibunya (anak pewaris) yang telah meninggal lebih dahulu, menurut KHI Pasal 185.</dd>
+            <dt>Gharawain</dt>
+            <dd>Kasus khusus suami/istri + ibu + ayah tanpa anak: ibu menerima 1/3 dari sisa setelah bagian pasangan, agar tidak melebihi bagian ayah.</dd>
+          </dl>
+
+          <h2>Dalil</h2>
+          <ul>
+            <li><strong>QS An-Nisa ayat 11</strong> — bagian anak, ayah, dan ibu.</li>
+            <li><strong>QS An-Nisa ayat 12</strong> — bagian suami, istri, dan saudara seibu.</li>
+            <li><strong>QS An-Nisa ayat 176</strong> — bagian saudara kandung dan saudara seayah (kalalah).</li>
+            <li><strong>KHI Buku II Pasal 176–193</strong> — ketentuan kewarisan dalam Kompilasi Hukum Islam, antara lain Pasal 185 (ahli waris pengganti), Pasal 192 (&rsquo;awl), dan Pasal 193 (radd).</li>
+          </ul>
+
+          <h2>Batasan &amp; Asumsi Kalkulator Ini</h2>
+          <ul>
+            <li>Kakek diperlakukan seperti ayah dan menghalangi saudara — pendapat mazhab Hanafi yang dipakai dalam praktik KHI. Sebagian ulama (mazhab Syafi&rsquo;i) memberi ruang berbagi antara kakek dan saudara.</li>
+            <li>Ahli waris pengganti mengikuti KHI Pasal 185: cucu menggantikan anak pewaris yang telah wafat, dengan rasio 2 : 1 antara cucu laki-laki dan cucu perempuan.</li>
+            <li>Paman, bibi, dan kerabat yang lebih jauh (dzawil arham) tidak dihitung dalam kalkulator ini.</li>
+            <li>Anak angkat dan anak tiri bukan ahli waris; mereka dapat menerima melalui wasiat (maksimal 1/3).</li>
+            <li>Nenek yang dihitung adalah nenek yang tidak terhalang oleh ibu; nenek dari pihak ayah juga terhalang bila ayah masih hidup.</li>
+            <li>Kasus yang kompleks, sengketa antar-ahli waris, atau harta berupa perusahaan/saham — konsultasikan ke Pengadilan Agama atau ustaz yang berkompeten.</li>
+          </ul>
+
+          <div class="note-box">
+            <p><strong>Disclaimer.</strong> WARIS! adalah alat bantu edukasi untuk mempelajari ilmu faraid, <strong>bukan fatwa dan bukan putusan pengadilan</strong>. Perhitungan mengikuti pemahaman umum QS An-Nisa ayat 11, 12, 176 dan KHI Buku II Pasal 176–193; perbedaan pendapat ulama tetap ada pada kasus-kasus tertentu. Penetapan ahli waris dan bagian yang sah hanya melalui Pengadilan Agama.</p>
+          </div>
+        </div>
+      </section>
+
+      <!-- ============ TAB 4: RIWAYAT ============ -->
+      <section class="tab-panel" id="panel-riwayat" role="tabpanel" aria-labelledby="tabbtn-riwayat" hidden>
+        <div class="card">
+          <h2>Skenario Tersimpan</h2>
+          <p class="card-sub">Tersimpan hanya di perangkat ini (penyimpanan lokal peramban). Tidak ada data yang dikirim ke server.</p>
+          <div id="hist-list"></div>
+        </div>
+      </section>
+    </div>
+
+    <footer class="site">
+      <p>WARIS! — Kalkulator Waris Islam. Berdasarkan QS An-Nisa ayat 11, 12, 176 dan Kompilasi Hukum Islam Buku II Pasal 176–193.</p>
+      <p>Alat edukasi — bukan fatwa, bukan putusan pengadilan. Data hanya tersimpan di perangkat Anda.</p>
+      <p id="selftest-fail">Self-test engine: ADA YANG GAGAL — hasil perhitungan perlu diperiksa ulang.</p>
+    </footer>
+
+    <div class="toast" id="toast" role="status"></div>
+
+    <div class="modal-overlay" id="save-modal">
+      <div class="modal" role="dialog" aria-modal="true" aria-labelledby="save-modal-title">
+        <h3 id="save-modal-title">Simpan Skenario</h3>
+        <p>Beri nama agar mudah ditemukan kembali di tab Riwayat.</p>
+        <label class="f-label" for="inp-scenario-name">Nama skenario</label>
+        <input type="text" id="inp-scenario-name" autocomplete="off" />
+        <div class="m-actions">
+          <button type="button" class="btn btn-ghost" id="btn-save-cancel">Batal</button>
+          <button type="button" class="btn btn-primary" id="btn-save-confirm" style="width:auto;flex:1">Simpan</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+    "use strict";
+    /* ================= Pecahan eksak (pembilang/penyebut) ================= */
+    function gcd(a,b){ a=Math.abs(a); b=Math.abs(b); while(b){ var t=a%b; a=b; b=t; } return a||1; }
+    function fr(n,d){ d=(d===undefined)?1:d; if(d<0){ n=-n; d=-d; } var g=gcd(n,d); return { n:n/g, d:d/g }; }
+    var F0=fr(0), F1=fr(1);
+    function fadd(a,b){ return fr(a.n*b.d + b.n*a.d, a.d*b.d); }
+    function fsub(a,b){ return fr(a.n*b.d - b.n*a.d, a.d*b.d); }
+    function fmul(a,b){ return fr(a.n*b.n, a.d*b.d); }
+    function fdiv(a,b){ return fr(a.n*b.d, a.d*b.n); }
+    function fcmp(a,b){ var x=a.n*b.d - b.n*a.d; return x>0?1:(x<0?-1:0); }
+    function fracText(f){ return f.d===1 ? String(f.n) : (f.n + "/" + f.d); }
+    var FRAC_WORDS = {
+      "1/1":"seluruhnya","1/2":"separuh","1/3":"sepertiga","2/3":"dua pertiga",
+      "1/4":"seperempat","3/4":"tiga perempat","1/6":"seperenam","5/6":"lima perenam",
+      "1/8":"seperdelapan","3/8":"tiga perdelapan","5/8":"lima perdelapan","7/8":"tujuh perdelapan",
+      "1/12":"seperduabelas","5/12":"lima perduabelas","7/12":"tujuh perduabelas","11/12":"sebelas perduabelas"
+    };
+    function fracWord(f){ return FRAC_WORDS[f.n + "/" + f.d] || null; }
+    function pctText(f){
+      var p = (f.n / f.d) * 100;
+      var s = p.toFixed(2).replace(/\.?0+$/,"");
+      if(s===""||s==="-0") s="0";
+      return s.replace(".", ",") + "%";
+    }
+    function rp(n){ return "Rp " + String(Math.round(n)).replace(/\B(?=(\d{3})+(?!\d))/g, "."); }
+
+    /* ================= ENGINE FARAID =================
+       inp: { gender:'L'|'P', total, makam, utang, wasiat, gono(bool),
+              spouse, son, daughter, father, mother, grandfather, grandmother,
+              fullM, fullF, patM, patF, matM, matF,
+              repl: [ {type:'son'|'daughter', gm, gf} ] }
+       Mengembalikan waterfall, daftar penerima per orang (pecahan eksak),
+       penerima terhalang, lencana kasus, dan langkah cara hitung.          */
+    function computeWaris(inp){
+      var steps = [];
+      function step(text, dalil){ steps.push({ text:text, dalil:dalil||null }); }
+
+      /* ---- Waterfall harta ---- */
+      var total = Math.max(0, Math.floor(inp.total||0));
+      var sisa = total;
+      var gg = 0;
+      if (inp.gono && (inp.spouse||0) > 0){ gg = Math.floor(total/2); sisa -= gg; }
+      var makamIn = Math.max(0, Math.floor(inp.makam||0));
+      var makam = Math.min(makamIn, sisa); sisa -= makam;
+      var utangIn = Math.max(0, Math.floor(inp.utang||0));
+      var utang = Math.min(utangIn, sisa); sisa -= utang;
+      var wasiatIn = Math.max(0, Math.floor(inp.wasiat||0));
+      var wasiatCap = Math.floor(sisa/3);
+      var wasiat = Math.min(wasiatIn, wasiatCap);
+      var wasiatCapped = wasiatIn > wasiatCap;
+      var net = sisa - wasiat;
+
+      step("Total harta peninggalan: " + rp(total) + ".");
+      if (gg > 0) step("Harta bersama (gono-gini): " + rp(gg) + " (50% dari total harta) dipisahkan terlebih dahulu sebagai hak pasangan yang masih hidup — bagian ini bukan warisan.", "KHI Pasal 96–97");
+      if (makam > 0) step("Biaya pemakaman dan pengurusan jenazah dibayarkan: " + rp(makam) + ".");
+      if (utang > 0) step("Utang pewaris dilunasi: " + rp(utang) + ".");
+      if (wasiatIn > 0){
+        if (wasiatCapped) step("Wasiat diminta " + rp(wasiatIn) + ", tetapi wasiat maksimal 1/3 dari sisa harta setelah pemakaman dan utang (" + rp(sisa) + "), sehingga yang ditunaikan dibatasi menjadi " + rp(wasiat) + ".", "Hadis Sa'ad bin Abi Waqqash (HR. Bukhari & Muslim)");
+        else step("Wasiat ditunaikan: " + rp(wasiat) + " (tidak melebihi 1/3 sisa harta).", "Hadis Sa'ad bin Abi Waqqash (HR. Bukhari & Muslim)");
+      }
+      step("Harta bersih yang dibagi kepada ahli waris: " + rp(net) + ".");
+
+      /* ---- Hitungan ahli waris ---- */
+      var c = {
+        spouse: inp.spouse||0, son: inp.son||0, daughter: inp.daughter||0,
+        father: inp.father||0, mother: inp.mother||0,
+        grandfather: inp.grandfather||0, grandmother: inp.grandmother||0,
+        fullM: inp.fullM||0, fullF: inp.fullF||0,
+        patM: inp.patM||0, patF: inp.patF||0,
+        matM: inp.matM||0, matF: inp.matF||0
+      };
+      var repl = (inp.repl||[]).filter(function(r){ return (r.gm||0) + (r.gf||0) >= 1; });
+      var replSons = repl.filter(function(r){ return r.type==="son"; });
+      var replDaughters = repl.filter(function(r){ return r.type==="daughter"; });
+      var vSon = c.son + replSons.length;          // anak laki-laki "seolah hidup"
+      var vDaughter = c.daughter + replDaughters.length;
+      var hasDesc = (vSon + vDaughter) > 0;
+      var sibTotal = c.fullM + c.fullF + c.patM + c.patF + c.matM + c.matF;
+      var spouseLabel = inp.gender === "P" ? "Suami" : "Istri";
+      var spouseDalil = inp.gender === "P" ? "QS An-Nisa 12; KHI Pasal 179" : "QS An-Nisa 12; KHI Pasal 180";
+
+      var badges = [];
+      var blocked = [];   // {label, count, by}
+      function addBlocked(label, count, by){ if (count>0) blocked.push({ label:label, count:count, by:by }); }
+
+      /* ---- Hijab ---- */
+      var sibBlockBy = null;
+      if (c.father>0) sibBlockBy = "Ayah";
+      else if (vSon>0) sibBlockBy = "Anak laki-laki";
+      else if (c.grandfather>0) sibBlockBy = "Kakek";
+      var matBlockBy = null;
+      if (c.father>0) matBlockBy = "Ayah";
+      else if (c.grandfather>0) matBlockBy = "Kakek";
+      else if (hasDesc) matBlockBy = "Anak/cucu pewaris";
+
+      var gfBlocked = c.father>0;
+      var gmBlocked = c.mother>0;
+      if (gfBlocked) addBlocked("Kakek", c.grandfather, "Ayah");
+      if (gmBlocked) addBlocked("Nenek", c.grandmother, "Ibu");
+      if (sibBlockBy){
+        addBlocked("Saudara kandung laki-laki", c.fullM, sibBlockBy);
+        addBlocked("Saudara kandung perempuan", c.fullF, sibBlockBy);
+        addBlocked("Saudara seayah laki-laki", c.patM, sibBlockBy);
+        addBlocked("Saudara seayah perempuan", c.patF, sibBlockBy);
+      }
+      if (matBlockBy){
+        addBlocked("Saudara seibu laki-laki", c.matM, matBlockBy);
+        addBlocked("Saudara seibu perempuan", c.matF, matBlockBy);
+      }
+      var sibBlocked = !!sibBlockBy;
+      var matBlocked = !!matBlockBy;
+
+      /* ---- Kasus khusus gharawain ---- */
+      var gharawain = !hasDesc && c.spouse>0 && c.mother>0 && c.father>0;
+
+      /* ---- Bagian tetap (grup) ---- */
+      var spouseF = F0;
+      if (c.spouse>0) spouseF = inp.gender==="P" ? (hasDesc? fr(1,4) : fr(1,2)) : (hasDesc? fr(1,8) : fr(1,4));
+      var daughtersF = F0;
+      if (vDaughter>0 && vSon===0) daughtersF = vDaughter===1 ? fr(1,2) : fr(2,3);
+      var fatherF = (c.father>0 && hasDesc) ? fr(1,6) : F0;
+      var motherF = F0;
+      if (c.mother>0){
+        if (gharawain) motherF = fmul(fsub(F1, spouseF), fr(1,3));
+        else motherF = (hasDesc || sibTotal>=2) ? fr(1,6) : fr(1,3);
+      }
+      var grandfatherF = (c.grandfather>0 && !gfBlocked && hasDesc) ? fr(1,6) : F0;
+      var grandmotherF = (c.grandmother>0 && !gmBlocked) ? fr(1,6) : F0;
+      var fullSisterF = F0;
+      if (c.fullF>0 && !sibBlocked && c.fullM===0 && !hasDesc) fullSisterF = c.fullF===1 ? fr(1,2) : fr(2,3);
+      var patSisterF = F0, patSisterZero = false;
+      if (c.patF>0 && !sibBlocked && c.patM===0 && c.fullM===0 && !hasDesc){
+        if (c.fullF===0) patSisterF = c.patF===1 ? fr(1,2) : fr(2,3);
+        else if (c.fullF===1) patSisterF = fr(1,6);
+        else patSisterZero = true;
+      }
+      if (patSisterZero) addBlocked("Saudara seayah perempuan", c.patF, "Saudara kandung perempuan (bagiannya telah mencapai 2/3)");
+      var matF = F0;
+      var matCount = c.matM + c.matF;
+      if (matCount>0 && !matBlocked) matF = matCount===1 ? fr(1,6) : fr(1,3);
+
+      var fixedMap = [
+        { key:"spouse", f:spouseF }, { key:"daughters", f:daughtersF },
+        { key:"father", f:fatherF }, { key:"mother", f:motherF },
+        { key:"grandfather", f:grandfatherF }, { key:"grandmother", f:grandmotherF },
+        { key:"fullSister", f:fullSisterF }, { key:"patSister", f:patSisterF },
+        { key:"matSib", f:matF }
+      ];
+      var sumFixed = F0;
+      fixedMap.forEach(function(g){ sumFixed = fadd(sumFixed, g.f); });
+      function getF(key){ for (var i=0;i<fixedMap.length;i++) if (fixedMap[i].key===key) return fixedMap[i].f; return F0; }
+      function setF(key, val){ for (var i=0;i<fixedMap.length;i++) if (fixedMap[i].key===key) fixedMap[i].f = val; }
+
+      /* ---- Asabah: kandidat pertama mengambil seluruh sisa ---- */
+      var asabah = null; // {kind:'children'|'father'|'grandfather'|'fullBro'|'fullSis'|'patBro'|'patSis'}
+      if (vSon>0) asabah = { kind:"children" };
+      else if (c.father>0) asabah = { kind:"father" };
+      else if (c.grandfather>0 && !gfBlocked) asabah = { kind:"grandfather" };
+      else if (c.fullM>0 && !sibBlocked) asabah = { kind:"fullBro" };
+      else if (c.fullF>0 && vDaughter>0 && c.fullM===0 && !sibBlocked) asabah = { kind:"fullSis" };
+      else if (c.patM>0 && !sibBlocked) asabah = { kind:"patBro" };
+      else if (c.patF>0 && vDaughter>0 && c.fullF===0 && c.patM===0 && !sibBlocked) asabah = { kind:"patSis" };
+
+      /* ---- 'Awl / Radd / hanya pasangan ---- */
+      var isAwl = false, isRadd = false, spouseOnly = false;
+      var residue = F0;
+      var cmpSum = fcmp(sumFixed, F1);
+      if (cmpSum > 0){
+        isAwl = true;
+        var inv = fdiv(F1, sumFixed);
+        fixedMap.forEach(function(g){ g.f = fmul(g.f, inv); });
+        sumFixed = F1; residue = F0;
+      } else if (cmpSum === 0){
+        residue = F0;
+      } else {
+        residue = fsub(F1, sumFixed);
+        if (!asabah){
+          var nonSpouseSum = fsub(sumFixed, getF("spouse"));
+          if (fcmp(nonSpouseSum, F0) > 0){
+            isRadd = true;
+            var target = fsub(F1, getF("spouse"));
+            var factor = fdiv(target, nonSpouseSum);
+            fixedMap.forEach(function(g){ if (g.key!=="spouse") g.f = fmul(g.f, factor); });
+            sumFixed = F1; residue = F0;
+          } else if (c.spouse>0){
+            spouseOnly = true;
+            setF("spouse", F1); sumFixed = F1; residue = F0;
+          }
+        }
+      }
+      if (isAwl) badges.push("'Awl");
+      if (isRadd) badges.push("Radd");
+      if (gharawain) badges.push("Gharawain");
+      if (spouseOnly) badges.push("Hanya pasangan");
+      if (blocked.length>0) badges.push("Terhalang (hijab)");
+
+      /* ---- Bangun daftar penerima per orang (pecahan per orang) ---- */
+      var persons = []; // {group, label, count, perFrac, category, kind, dalil, reason}
+      function addPersons(group, label, count, perFrac, category, kind, dalil, reason){
+        if (count>0 && fcmp(perFrac, F0)>0) persons.push({ group:group, label:label, count:count, perFrac:perFrac, category:category, kind:kind, dalil:dalil, reason:reason });
+      }
+      // Pasangan
+      if (c.spouse>0) addPersons("main", spouseLabel, c.spouse, fdiv(getF("spouse"), fr(c.spouse)), "spouse", "tetap", spouseDalil,
+        hasDesc ? "Ada keturunan, sehingga bagian pasangan berkurang." : "Tidak ada keturunan.");
+      // Anak: tetap (perempuan) atau asabah bersama anak laki-laki
+      var childUnits = 2*vSon + vDaughter;
+      function childFrac(sex){ // pecahan untuk SATU anak (virtual) tertentu
+        if (vSon>0 && asabah && asabah.kind==="children" && fcmp(residue,F0)>0)
+          return fmul(residue, fr(sex==="son"?2:1, childUnits));
+        if (sex==="daughter" && vSon===0) return fdiv(getF("daughters"), fr(vDaughter));
+        return F0;
+      }
+      if (c.son>0) addPersons("main", "Anak laki-laki", c.son, childFrac("son"), "child", "asabah", "QS An-Nisa 11; KHI Pasal 176",
+        "Asabah — menerima sisa harta, berbagi 2 : 1 dengan anak perempuan.");
+      if (c.daughter>0){
+        if (vSon>0) addPersons("main", "Anak perempuan", c.daughter, childFrac("daughter"), "child", "asabah", "QS An-Nisa 11; KHI Pasal 176",
+          "Menjadi asabah bersama anak laki-laki dengan rasio 2 : 1.");
+        else addPersons("main", "Anak perempuan", c.daughter, childFrac("daughter"), "child", "tetap", "QS An-Nisa 11; KHI Pasal 176",
+          vDaughter===1 ? "Anak perempuan tunggal tanpa anak laki-laki: 1/2." : "Dua anak perempuan atau lebih tanpa anak laki-laki: 2/3 bersama.");
+      }
+      // Orang tua & kakek-nenek
+      var fatherExtra = (asabah && asabah.kind==="father") ? residue : F0;
+      if (c.father>0){
+        var fTot = fadd(getF("father"), fatherExtra);
+        var fKind = fcmp(getF("father"),F0)>0 && fcmp(fatherExtra,F0)>0 ? "tetap + asabah" : (fcmp(fatherExtra,F0)>0 ? "asabah" : "tetap");
+        addPersons("main", "Ayah", 1, fTot, "parent", fKind, "QS An-Nisa 11; KHI Pasal 177",
+          gharawain ? "Kasus gharawain: ayah menerima sisa setelah bagian pasangan dan ibu." :
+          (hasDesc ? "Ada keturunan: ayah mendapat 1/6" + (fcmp(fatherExtra,F0)>0 ? " ditambah seluruh sisa sebagai asabah." : ".") : "Tanpa keturunan, ayah menerima seluruh sisa sebagai asabah."));
+      }
+      if (c.mother>0) addPersons("main", "Ibu", 1, getF("mother"), "parent", "tetap", "QS An-Nisa 11; KHI Pasal 178",
+        gharawain ? "Kasus gharawain: ibu mendapat 1/3 dari sisa setelah bagian pasangan." :
+        ((hasDesc || sibTotal>=2) ? "Ada keturunan atau saudara dua orang atau lebih: ibu mendapat 1/6." : "Tidak ada keturunan dan saudara kurang dari dua: ibu mendapat 1/3."));
+      var gfExtra = (asabah && asabah.kind==="grandfather") ? residue : F0;
+      if (c.grandfather>0 && !gfBlocked){
+        var gTot = fadd(getF("grandfather"), gfExtra);
+        var gKind = fcmp(getF("grandfather"),F0)>0 && fcmp(gfExtra,F0)>0 ? "tetap + asabah" : (fcmp(gfExtra,F0)>0 ? "asabah" : "tetap");
+        addPersons("main", "Kakek", 1, gTot, "parent", gKind, "QS An-Nisa 11; KHI Pasal 177 (kakek dipersamakan dengan ayah)",
+          "Ayah telah tiada, sehingga kakek menempati kedudukan ayah.");
+      }
+      if (c.grandmother>0 && !gmBlocked) addPersons("main", "Nenek", c.grandmother, fdiv(getF("grandmother"), fr(c.grandmother)), "parent", "tetap",
+        "Hadis Nabi tentang bagian nenek (HR. Abu Dawud); KHI Buku II", "Ibu telah tiada: nenek mendapat 1/6" + (c.grandmother>1 ? ", dibagi rata." : "."));
+      // Saudara kandung
+      if (!sibBlocked){
+        if (asabah && asabah.kind==="fullBro" && fcmp(residue,F0)>0){
+          var uFB = 2*c.fullM + c.fullF;
+          if (c.fullM>0) addPersons("main", "Saudara kandung laki-laki", c.fullM, fmul(residue, fr(2, uFB)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Asabah — menerima sisa, berbagi 2 : 1 dengan saudara kandung perempuan.");
+          if (c.fullF>0) addPersons("main", "Saudara kandung perempuan", c.fullF, fmul(residue, fr(1, uFB)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Menjadi asabah bersama saudara kandung laki-laki dengan rasio 2 : 1.");
+        } else if (asabah && asabah.kind==="fullSis" && fcmp(residue,F0)>0){
+          if (c.fullF>0) addPersons("main", "Saudara kandung perempuan", c.fullF, fdiv(residue, fr(c.fullF)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Menjadi asabah karena ada anak perempuan (asabah ma'al ghair) — menerima sisa.");
+        } else if (c.fullF>0 && fcmp(getF("fullSister"),F0)>0){
+          addPersons("main", "Saudara kandung perempuan", c.fullF, fdiv(getF("fullSister"), fr(c.fullF)), "sibling", "tetap", "QS An-Nisa 176; KHI Pasal 181",
+            c.fullF===1 ? "Tunggal tanpa anak, ayah, kakek, dan saudara kandung laki-laki: 1/2." : "Dua orang atau lebih tanpa anak, ayah, kakek, dan saudara kandung laki-laki: 2/3 bersama.");
+        }
+        if (asabah && asabah.kind==="patBro" && fcmp(residue,F0)>0){
+          var uPB = 2*c.patM + c.patF;
+          if (c.patM>0) addPersons("main", "Saudara seayah laki-laki", c.patM, fmul(residue, fr(2, uPB)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Asabah — menerima sisa, berbagi 2 : 1 dengan saudara seayah perempuan.");
+          if (c.patF>0) addPersons("main", "Saudara seayah perempuan", c.patF, fmul(residue, fr(1, uPB)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Menjadi asabah bersama saudara seayah laki-laki dengan rasio 2 : 1.");
+        } else if (asabah && asabah.kind==="patSis" && fcmp(residue,F0)>0){
+          if (c.patF>0) addPersons("main", "Saudara seayah perempuan", c.patF, fdiv(residue, fr(c.patF)), "sibling", "asabah", "QS An-Nisa 176; KHI Pasal 181", "Menjadi asabah karena ada anak perempuan — menerima sisa.");
+        } else if (c.patF>0 && fcmp(getF("patSister"),F0)>0){
+          addPersons("main", "Saudara seayah perempuan", c.patF, fdiv(getF("patSister"), fr(c.patF)), "sibling", "tetap", "QS An-Nisa 176; KHI Pasal 181",
+            c.fullF===1 ? "Ada tepat satu saudara kandung perempuan: saudara seayah perempuan menyempurnakan menjadi 2/3 dengan bagian 1/6." : (c.patF===1 ? "Tunggal tanpa saudara kandung: 1/2." : "Dua orang atau lebih tanpa saudara kandung: 2/3 bersama."));
+        }
+      }
+      // Saudara seibu
+      if (!matBlocked && matCount>0) addPersons("main", "Saudara seibu", matCount, fdiv(getF("matSib"), fr(matCount)), "sibling", "tetap", "QS An-Nisa 12; KHI Pasal 182",
+        matCount===1 ? "Tunggal: 1/6." : "Dua orang atau lebih: 1/3 bersama, dibagi rata tanpa membedakan laki-laki dan perempuan.");
+      // Cucu pengganti (KHI 185)
+      repl.forEach(function(r, idx){
+        var parentFrac = childFrac(r.type);
+        var units = 2*(r.gm||0) + (r.gf||0);
+        var fromLabel = r.type==="son" ? "Anak laki-laki yang telah meninggal" : "Anak perempuan yang telah meninggal";
+        if (units>0 && fcmp(parentFrac,F0)>0){
+          if ((r.gm||0)>0) persons.push({ group:"repl", replIndex:idx, fromLabel:fromLabel, label:"Cucu laki-laki", count:r.gm, perFrac:fmul(parentFrac, fr(2, units)), category:"grandchild", kind:"pengganti", dalil:"KHI Pasal 185", reason:"Menggantikan kedudukan " + (r.type==="son"?"ayahnya":"ibunya") + " (" + fromLabel.toLowerCase() + "); cucu berbagi 2 : 1." });
+          if ((r.gf||0)>0) persons.push({ group:"repl", replIndex:idx, fromLabel:fromLabel, label:"Cucu perempuan", count:r.gf, perFrac:fmul(parentFrac, fr(1, units)), category:"grandchild", kind:"pengganti", dalil:"KHI Pasal 185", reason:"Menggantikan kedudukan " + (r.type==="son"?"ayahnya":"ibunya") + " (" + fromLabel.toLowerCase() + "); cucu berbagi 2 : 1." });
+        } else if (units>0){
+          blocked.push({ label:"Cucu (pengganti " + fromLabel.toLowerCase() + ")", count:(r.gm||0)+(r.gf||0), by:"bagian " + (r.type==="son"?"anak laki-laki":"anak perempuan") + " yang digantikan bernilai nol pada kasus ini" });
+        }
+      });
+
+      /* ---- Konversi ke Rupiah: floor + sisa ke sisa-bagian terbesar ---- */
+      var flat = [];
+      persons.forEach(function(p){
+        for (var i=0;i<p.count;i++){
+          var exact = net * (p.perFrac.n / p.perFrac.d);
+          flat.push({ p:p, exact:exact, amt:Math.floor(exact) });
+        }
+      });
+      var sumAmt = flat.reduce(function(s,x){ return s + x.amt; }, 0);
+      var remainderRp = net - sumAmt;
+      if (remainderRp > 0 && flat.length > 0){
+        var order = flat.slice().sort(function(a,b){
+          var fa = a.exact - Math.floor(a.exact), fb = b.exact - Math.floor(b.exact);
+          if (fb !== fa) return fb - fa;
+          return b.exact - a.exact;
+        });
+        for (var k=0; k<remainderRp && k<order.length; k++) order[k].amt += 1;
+      }
+      persons.forEach(function(p){
+        var mine = flat.filter(function(x){ return x.p === p; });
+        p.totalAmt = mine.reduce(function(s,x){ return s + x.amt; }, 0);
+        p.perAmt = p.count>0 ? mine[0].amt : 0;
+        p.groupFrac = fmul(p.perFrac, fr(p.count));
+      });
+      var totalDistributed = persons.reduce(function(s,p){ return s + p.totalAmt; }, 0);
+
+      /* ---- Langkah penjelasan per ahli waris ---- */
+      persons.forEach(function(p){
+        var w = fracWord(p.groupFrac);
+        step(p.label + (p.count>1 ? " (" + p.count + " orang)" : "") + " mendapat " + fracText(p.groupFrac) + (w ? " (" + w + ")" : "") +
+             " dari harta bersih = " + rp(p.totalAmt) + (p.count>1 ? " (" + rp(p.perAmt) + " per orang)" : "") +
+             ". Alasan: " + p.reason + " Jenis bagian: " + p.kind + ".", p.dalil);
+      });
+      blocked.forEach(function(b){
+        step(b.label + (b.count>1 ? " (" + b.count + " orang)" : "") + " tidak mendapat bagian — terhalang (hijab) oleh " + b.by + ".", "QS An-Nisa 11, 12, 176; KHI Buku II");
+      });
+      if (gharawain) step("Kasus ini adalah gharawain: tanpa keturunan, ahli waris terdiri dari pasangan, ibu, dan ayah. Ibu diberi 1/3 dari sisa setelah bagian pasangan — bukan 1/3 dari seluruh harta — agar bagian ibu tidak melebihi bagian ayah.", "Praktik Umar bin Khattab; KHI Pasal 178");
+      if (isAwl) step("Terjadi 'awl: jumlah bagian tetap melebihi harta yang tersedia, sehingga seluruh bagian tetap dikecilkan secara proporsional dan asabah tidak menerima sisa.", "KHI Pasal 192");
+      if (isRadd) step("Terjadi radd: setelah bagian tetap dibagikan masih ada sisa dan tidak ada asabah, sehingga sisa dibagikan kembali secara proporsional kepada ahli waris bagian tetap selain pasangan.", "KHI Pasal 193");
+      if (spouseOnly) step("Hanya pasangan yang menjadi ahli waris, sehingga seluruh harta bersih diberikan kepada pasangan.", "KHI Pasal 179–180");
+
+      var heirPresence = c.spouse + vSon + vDaughter + c.father + c.mother + c.grandfather + c.grandmother + sibTotal;
+      return {
+        waterfall: { total:total, gg:gg, makam:makam, utang:utang, wasiatIn:wasiatIn, wasiat:wasiat, wasiatCapped:wasiatCapped, net:net },
+        persons: persons, blocked: blocked, badges: badges, steps: steps,
+        totalDistributed: totalDistributed, hasHeirs: heirPresence > 0,
+        gharawain: gharawain, isAwl: isAwl, isRadd: isRadd
+      };
+    }
+    </script>
+
+    <script>
+    "use strict";
+    /* ================= State & elemen ================= */
+    var LS_KEY = "waris.scenarios.v1";
+    var COUNT_KEYS = ["spouse","son","daughter","father","mother","grandfather","grandmother","fullM","fullF","patM","patF","matM","matF"];
+    function emptyCounts(){ var o={}; COUNT_KEYS.forEach(function(k){ o[k]=0; }); return o; }
+    var S = { name:"", gender:"L", total:0, makam:0, utang:0, wasiat:0, gono:false, counts:emptyCounts(), repl:[] };
+    var lastResult = null;
+    var $ = function(id){ return document.getElementById(id); };
+    var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    var STEPPERS = [
+      { key:"spouse", label:"", max:4 },
+      { key:"son", label:"Anak laki-laki", max:20 },
+      { key:"daughter", label:"Anak perempuan", max:20 },
+      { key:"father", label:"Ayah", max:1 },
+      { key:"mother", label:"Ibu", max:1 },
+      { key:"grandfather", label:"Kakek", sub:"ayah dari ayah", max:1 },
+      { key:"grandmother", label:"Nenek", sub:"dari pihak ayah / ibu", max:2 },
+      { key:"fullM", label:"Saudara kandung laki-laki", max:20 },
+      { key:"fullF", label:"Saudara kandung perempuan", max:20 },
+      { key:"patM", label:"Saudara seayah laki-laki", max:20 },
+      { key:"patF", label:"Saudara seayah perempuan", max:20 },
+      { key:"matM", label:"Saudara seibu laki-laki", max:20 },
+      { key:"matF", label:"Saudara seibu perempuan", max:20 }
+    ];
+    function spouseLabel(){ return S.gender === "P" ? "Suami" : "Istri"; }
+    function spouseMax(){ return S.gender === "P" ? 1 : 4; }
+
+    function buildInput(){
+      return {
+        gender:S.gender, total:S.total, makam:S.makam, utang:S.utang, wasiat:S.wasiat, gono:S.gono,
+        spouse:S.counts.spouse, son:S.counts.son, daughter:S.counts.daughter,
+        father:S.counts.father, mother:S.counts.mother,
+        grandfather:S.counts.grandfather, grandmother:S.counts.grandmother,
+        fullM:S.counts.fullM, fullF:S.counts.fullF, patM:S.counts.patM, patF:S.counts.patF,
+        matM:S.counts.matM, matF:S.counts.matF,
+        repl:S.repl.map(function(r){ return { type:r.type, gm:r.gm, gf:r.gf }; })
+      };
+    }
+    function totalHeirs(){
+      var n = 0; COUNT_KEYS.forEach(function(k){ n += S.counts[k]; });
+      S.repl.forEach(function(r){ if ((r.gm + r.gf) >= 1) n += 1; });
+      return n;
+    }
+
+    /* ================= Toast ================= */
+    var toastTimer = null;
+    function toast(msg){
+      var t = $("toast"); t.textContent = msg; t.classList.add("show");
+      clearTimeout(toastTimer);
+      toastTimer = setTimeout(function(){ t.classList.remove("show"); }, 2600);
+    }
+
+    /* ================= Tabs ================= */
+    document.querySelectorAll(".tab-btn").forEach(function(btn){
+      btn.addEventListener("click", function(){ switchTab(btn.getAttribute("data-tab")); });
+    });
+    function switchTab(name){
+      document.querySelectorAll(".tab-btn").forEach(function(b){
+        b.setAttribute("aria-selected", b.getAttribute("data-tab")===name ? "true" : "false");
+      });
+      ["kalkulator","contoh","pelajari","riwayat"].forEach(function(t){
+        $("panel-" + t).hidden = t !== name;
+      });
+      if (name === "riwayat") renderHistory();
+      window.scrollTo({ top:0, behavior: reduceMotion ? "auto" : "smooth" });
+    }
+
+    /* ================= Form: pewaris & harta ================= */
+    $("inp-nama").addEventListener("input", function(e){ S.name = e.target.value; });
+    function setGender(g){
+      S.gender = g;
+      $("gender-L").setAttribute("aria-pressed", g==="L" ? "true" : "false");
+      $("gender-P").setAttribute("aria-pressed", g==="P" ? "true" : "false");
+      if (S.counts.spouse > spouseMax()) S.counts.spouse = spouseMax();
+      renderSteppers(); refreshLive();
+    }
+    $("gender-L").addEventListener("click", function(){ setGender("L"); });
+    $("gender-P").addEventListener("click", function(){ setGender("P"); });
+
+    function bindMoney(id, key){
+      var el = $(id);
+      el.addEventListener("input", function(){
+        var digits = el.value.replace(/[^\d]/g, "");
+        var val = digits === "" ? 0 : parseInt(digits, 10);
+        S[key] = val;
+        el.value = digits === "" ? "" : String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ".");
+        refreshLive();
+      });
+    }
+    bindMoney("inp-total", "total");
+    bindMoney("inp-makam", "makam");
+    bindMoney("inp-utang", "utang");
+    bindMoney("inp-wasiat", "wasiat");
+    $("inp-gono").addEventListener("change", function(e){ S.gono = e.target.checked; refreshLive(); });
+
+    function setMoneyInput(id, val){
+      $(id).value = val > 0 ? String(val).replace(/\B(?=(\d{3})+(?!\d))/g, ".") : "";
+    }
+
+    /* ================= Steppers ahli waris ================= */
+    function renderSteppers(){
+      var box = $("steppers"); box.innerHTML = "";
+      STEPPERS.forEach(function(def){
+        var max = def.key === "spouse" ? spouseMax() : def.max;
+        var label = def.key === "spouse" ? spouseLabel() : def.label;
+        var val = S.counts[def.key];
+        var row = document.createElement("div");
+        row.className = "stepper-row";
+        row.innerHTML =
+          '<div class="stepper-label">' + label + (def.sub ? '<span class="sub">' + def.sub + "</span>" : "") + "</div>" +
+          '<div class="stepper">' +
+            '<button type="button" class="step-btn" data-k="' + def.key + '" data-dir="-1" aria-label="Kurangi ' + label + '"' + (val<=0 ? " disabled" : "") + ">&minus;</button>" +
+            '<span class="step-val tnum" id="sv-' + def.key + '">' + val + "</span>" +
+            '<button type="button" class="step-btn" data-k="' + def.key + '" data-dir="1" aria-label="Tambah ' + label + '"' + (val>=max ? " disabled" : "") + ">+</button>" +
+          "</div>";
+        box.appendChild(row);
+      });
+      box.querySelectorAll(".step-btn").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var k = btn.getAttribute("data-k"), dir = parseInt(btn.getAttribute("data-dir"), 10);
+          var def = STEPPERS.filter(function(d){ return d.key===k; })[0];
+          var max = k === "spouse" ? spouseMax() : def.max;
+          S.counts[k] = Math.min(max, Math.max(0, S.counts[k] + dir));
+          renderSteppers(); refreshLive();
+        });
+      });
+    }
+
+    /* ================= Ahli waris pengganti ================= */
+    function renderRepl(){
+      var box = $("repl-list"); box.innerHTML = "";
+      S.repl.forEach(function(r, idx){
+        var row = document.createElement("div");
+        row.className = "repl-row";
+        row.innerHTML =
+          '<div class="repl-head">' +
+            '<select data-r="' + idx + '" aria-label="Jenis anak yang telah meninggal">' +
+              '<option value="son"' + (r.type==="son" ? " selected" : "") + ">Anak laki-laki yang sudah meninggal</option>" +
+              '<option value="daughter"' + (r.type==="daughter" ? " selected" : "") + ">Anak perempuan yang sudah meninggal</option>" +
+            "</select>" +
+            '<button type="button" class="btn-del" data-del="' + idx + '">Hapus</button>' +
+          "</div>" +
+          '<div class="repl-grid">' +
+            '<div class="repl-cell"><span class="rc-label">Cucu laki-laki</span>' +
+              '<button type="button" class="step-btn" data-r="' + idx + '" data-f="gm" data-dir="-1" aria-label="Kurangi cucu laki-laki">&minus;</button>' +
+              '<span class="step-val tnum">' + r.gm + "</span>" +
+              '<button type="button" class="step-btn" data-r="' + idx + '" data-f="gm" data-dir="1" aria-label="Tambah cucu laki-laki">+</button></div>' +
+            '<div class="repl-cell"><span class="rc-label">Cucu perempuan</span>' +
+              '<button type="button" class="step-btn" data-r="' + idx + '" data-f="gf" data-dir="-1" aria-label="Kurangi cucu perempuan">&minus;</button>' +
+              '<span class="step-val tnum">' + r.gf + "</span>" +
+              '<button type="button" class="step-btn" data-r="' + idx + '" data-f="gf" data-dir="1" aria-label="Tambah cucu perempuan">+</button></div>' +
+          "</div>" +
+          ((r.gm + r.gf) < 1 ? '<p class="f-hint" style="color:var(--danger);font-weight:600">Tambahkan minimal 1 cucu agar baris ini dihitung.</p>' : "");
+        box.appendChild(row);
+      });
+      box.querySelectorAll("select").forEach(function(sel){
+        sel.addEventListener("change", function(){
+          S.repl[parseInt(sel.getAttribute("data-r"), 10)].type = sel.value;
+          refreshLive();
+        });
+      });
+      box.querySelectorAll("[data-del]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          S.repl.splice(parseInt(btn.getAttribute("data-del"), 10), 1);
+          renderRepl(); refreshLive();
+        });
+      });
+      box.querySelectorAll(".step-btn").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var i = parseInt(btn.getAttribute("data-r"), 10), f = btn.getAttribute("data-f"), dir = parseInt(btn.getAttribute("data-dir"), 10);
+          S.repl[i][f] = Math.min(20, Math.max(0, S.repl[i][f] + dir));
+          renderRepl(); refreshLive();
+        });
+      });
+    }
+    $("btn-add-repl").addEventListener("click", function(){
+      S.repl.push({ type:"son", gm:1, gf:0 });
+      renderRepl(); refreshLive();
+    });
+
+    /* ================= Waterfall live + validasi ================= */
+    function waterfallHTML(wf){
+      var h = "";
+      h += '<div class="wf-row"><span>Total harta</span><span class="wf-amt">' + rp(wf.total) + "</span></div>";
+      if (wf.gg > 0) h += '<div class="wf-row minus"><span>Harta bersama (gono-gini) untuk pasangan</span><span class="wf-amt">&minus;' + rp(wf.gg) + "</span></div>";
+      if (wf.makam > 0) h += '<div class="wf-row minus"><span>Biaya pemakaman</span><span class="wf-amt">&minus;' + rp(wf.makam) + "</span></div>";
+      if (wf.utang > 0) h += '<div class="wf-row minus"><span>Utang</span><span class="wf-amt">&minus;' + rp(wf.utang) + "</span></div>";
+      if (wf.wasiatIn > 0) h += '<div class="wf-row minus"><span>Wasiat' + (wf.wasiatCapped ? " (dibatasi 1/3)" : "") + '</span><span class="wf-amt">&minus;' + rp(wf.wasiat) + "</span></div>";
+      h += '<div class="wf-row net"><span>Harta bersih yang dibagi</span><span class="wf-amt">' + rp(wf.net) + "</span></div>";
+      return h;
+    }
+    function refreshLive(){
+      var res = computeWaris(buildInput());
+      $("wf-live").innerHTML = waterfallHTML(res.waterfall);
+      var warn = $("wasiat-warn");
+      if (res.waterfall.wasiatCapped){
+        warn.textContent = "Wasiat melebihi batas maksimal 1/3 dari sisa harta setelah pemakaman dan utang. Yang ditunaikan dibatasi menjadi " + rp(res.waterfall.wasiat) + ".";
+        warn.classList.add("show");
+      } else warn.classList.remove("show");
+      var btn = $("btn-hitung"), hint = $("hitung-hint"), msg = "";
+      if (S.total <= 0) msg = "Isi total harta peninggalan terlebih dahulu (harus lebih dari Rp 0).";
+      else if (totalHeirs() === 0) msg = "Tambahkan minimal satu ahli waris pada Bagian C atau D.";
+      btn.disabled = msg !== "";
+      hint.textContent = msg;
+      hint.classList.toggle("show", msg !== "");
+    }
+
+    /* ================= Hitung & render hasil ================= */
+    var CAT_COLORS = {
+      spouse:["#B98A1F"], child:["#0B3D2E","#2F7D5B","#4C9A76","#1E5C40"],
+      parent:["#6B7F72","#87A08D","#55705F","#9DB4A4"],
+      sibling:["#C4A484","#A9835A","#D3B98F","#96754A"],
+      grandchild:["#9B8AC4","#7E6FA8","#B3A6D4"]
+    };
+    $("btn-hitung").addEventListener("click", function(){ runCompute(true); });
+
+    function runCompute(scroll){
+      var res = computeWaris(buildInput());
+      lastResult = res;
+      renderHasil(res);
+      if (scroll) setTimeout(function(){ $("hasil").scrollIntoView({ behavior: reduceMotion ? "auto" : "smooth", block:"start" }); }, 60);
+    }
+
+    function animateMoney(el, target){
+      if (reduceMotion || !el){ el.textContent = rp(target); return; }
+      var start = null, dur = 700;
+      function tick(ts){
+        if (!start) start = ts;
+        var t = Math.min(1, (ts - start) / dur);
+        var eased = 1 - Math.pow(1 - t, 3);
+        el.textContent = rp(Math.round(target * eased));
+        if (t < 1) requestAnimationFrame(tick);
+        else el.textContent = rp(target);
+      }
+      requestAnimationFrame(tick);
+    }
+
+    function resRowHTML(p, color){
+      var w = fracWord(p.groupFrac);
+      var meta = '<span class="frac">' + fracText(p.groupFrac) + (w ? " (" + w + ")" : "") + "</span>" +
+                 "<span>" + pctText(p.groupFrac) + "</span>" +
+                 "<span>Bagian: " + p.kind + "</span>";
+      if (p.count > 1) meta += "<span>" + rp(p.perAmt) + " per orang</span>";
+      return '<div class="res-row">' +
+        '<div class="res-top"><span class="res-name">' + p.label + (p.count>1 ? ' <span class="cnt">&times;' + p.count + " orang</span>" : "") + '</span>' +
+        '<span class="res-total countup" data-amt="' + p.totalAmt + '">' + rp(p.totalAmt) + "</span></div>" +
+        '<div class="res-meta">' + meta + "</div>" +
+        '<p class="res-note">' + p.reason + "</p></div>";
+    }
+
+    function renderHasil(res){
+      var box = $("hasil");
+      var wf = res.waterfall;
+      var h = '<div class="card">';
+      h += "<h2>Hasil Pembagian" + (S.name.trim() ? " — " + escapeHTML(S.name.trim()) : "") + "</h2>";
+      if (!res.hasHeirs || res.persons.length === 0){
+        h += '<div class="baitulmal"><strong>Tidak ada ahli waris yang berhak menerima.</strong> Dalam keadaan ini harta peninggalan menjadi urusan baitul mal (negara). Konsultasikan ke Pengadilan Agama untuk penetapan lebih lanjut — jangan membagi harta secara sepihak.</div>';
+        h += "</div>";
+        box.innerHTML = h; box.hidden = false;
+        return;
+      }
+      h += '<div class="waterfall" style="margin-top:6px;border-top:0;padding-top:0">' + waterfallHTML(wf) + "</div>";
+      h += '<div class="hasil-net"><div class="hn-label">Harta bersih yang dibagikan</div><div class="hn-amt" id="hn-amt">' + rp(wf.net) + "</div></div>";
+      if (res.badges.length){
+        h += '<div class="badges">' + res.badges.map(function(b){ return '<span class="badge">' + b + "</span>"; }).join("") + "</div>";
+      }
+      if (wf.net > 0 && res.totalDistributed === wf.net)
+        h += '<div class="badges"><span class="badge green">Terbagi 100% — total sama dengan harta bersih</span></div>';
+      if (wf.gg > 0)
+        h += '<p class="f-hint" style="margin-top:10px">Pasangan juga menerima ' + rp(wf.gg) + " sebagai harta bersama (gono-gini) — ditampilkan terpisah karena bukan bagian warisan.</p>";
+
+      /* Distribution bar + legend */
+      var counters = {};
+      var segs = res.persons.filter(function(p){ return p.totalAmt > 0; }).map(function(p){
+        var arr = CAT_COLORS[p.category] || ["#6B7F72"];
+        var i = counters[p.category] || 0; counters[p.category] = i + 1;
+        var color = arr[i % arr.length];
+        var pct = wf.net > 0 ? (p.totalAmt / wf.net) * 100 : 0;
+        return { p:p, color:color, pct:pct };
+      });
+      h += '<div class="distbar" role="img" aria-label="Grafik proporsi pembagian waris">' +
+           segs.map(function(s){ return '<div class="seg" data-w="' + s.pct.toFixed(3) + '" style="background:' + s.color + '"></div>'; }).join("") + "</div>";
+      h += '<ul class="legend">' + segs.map(function(s){
+        return '<li><span class="dot" style="background:' + s.color + '"></span>' + s.p.label + (s.p.count>1 ? " &times;" + s.p.count : "") + '<span class="lg-amt">' + rp(s.p.totalAmt) + " (" + pctText(s.p.groupFrac) + ")</span></li>";
+      }).join("") + "</ul>";
+
+      /* Baris hasil */
+      var mainPersons = res.persons.filter(function(p){ return p.group === "main"; });
+      var replPersons = res.persons.filter(function(p){ return p.group === "repl"; });
+      h += mainPersons.map(function(p){ return resRowHTML(p); }).join("");
+      if (replPersons.length){
+        h += '<h3 class="res-group-title">Cucu — Ahli Waris Pengganti (KHI Pasal 185)</h3>';
+        var seenRepl = {};
+        replPersons.forEach(function(p){
+          if (!seenRepl[p.replIndex]){ seenRepl[p.replIndex] = true; h += '<p class="f-hint" style="margin:0 0 8px;font-weight:600">Menggantikan: ' + p.fromLabel + "</p>"; }
+          h += resRowHTML(p);
+        });
+      }
+      if (res.blocked.length){
+        h += '<h3 class="res-group-title">Tidak Mendapat Bagian</h3>';
+        res.blocked.forEach(function(b){
+          h += '<div class="res-row blocked"><div class="res-top"><span class="res-name">' + b.label + (b.count>1 ? ' <span class="cnt">&times;' + b.count + " orang</span>" : "") + '</span><span class="res-total">' + rp(0) + '</span></div>' +
+               '<p class="res-note">Terhalang oleh ' + b.by + "</p></div>";
+        });
+      }
+
+      /* Cara hitung */
+      h += '<details class="cara"><summary>Cara hitung — langkah demi langkah</summary><ol>' +
+           res.steps.map(function(s){ return "<li>" + s.text + (s.dalil ? ' <span class="dalil">(' + s.dalil + ")</span>" : "") + "</li>"; }).join("") +
+           "</ol></details>";
+
+      h += '<div class="hasil-actions">' +
+             '<button type="button" class="btn btn-ghost" id="btn-copy">Salin Hasil</button>' +
+             '<button type="button" class="btn btn-ghost" id="btn-save">Simpan Skenario</button>' +
+             '<button type="button" class="btn btn-ghost" id="btn-print">Cetak / Simpan PDF</button>' +
+           "</div>";
+      h += "</div>";
+      box.innerHTML = h;
+      box.hidden = false;
+
+      /* Animasi: bar tumbuh + angka count-up */
+      requestAnimationFrame(function(){
+        requestAnimationFrame(function(){
+          box.querySelectorAll(".distbar .seg").forEach(function(seg){
+            seg.style.width = reduceMotion ? seg.getAttribute("data-w") + "%" : "0%";
+            if (!reduceMotion) requestAnimationFrame(function(){ seg.style.width = seg.getAttribute("data-w") + "%"; });
+            else seg.style.width = seg.getAttribute("data-w") + "%";
+          });
+        });
+      });
+      animateMoney($("hn-amt"), wf.net);
+      box.querySelectorAll(".countup").forEach(function(el){ animateMoney(el, parseInt(el.getAttribute("data-amt"), 10)); });
+
+      $("btn-copy").addEventListener("click", copyHasil);
+      $("btn-save").addEventListener("click", openSaveModal);
+      $("btn-print").addEventListener("click", function(){
+        try { window.print(); } catch(e){ toast("Gunakan menu Cetak pada peramban Anda"); }
+      });
+    }
+
+    function escapeHTML(s){
+      return s.replace(/[&<>"']/g, function(ch){ return { "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;", "'":"&#39;" }[ch]; });
+    }
+
+    /* ================= Salin hasil ================= */
+    function copyHasil(){
+      if (!lastResult) return;
+      var res = lastResult, wf = res.waterfall;
+      var lines = [];
+      lines.push("Pembagian Waris" + (S.name.trim() ? " — " + S.name.trim() : ""));
+      lines.push("Harta bersih yang dibagi: " + rp(wf.net));
+      if (wf.gg > 0) lines.push("Pasangan menerima harta bersama (gono-gini): " + rp(wf.gg) + " (di luar warisan)");
+      res.persons.forEach(function(p){
+        var w = fracWord(p.groupFrac);
+        lines.push("- " + p.label + (p.count>1 ? " (" + p.count + " orang)" : "") + ": " + rp(p.totalAmt) +
+                   " — bagian " + fracText(p.groupFrac) + (w ? " (" + w + ")" : "") + ", " + pctText(p.groupFrac) +
+                   (p.count>1 ? ", " + rp(p.perAmt) + " per orang" : ""));
+      });
+      res.blocked.forEach(function(b){ lines.push("- " + b.label + ": Rp 0 (terhalang oleh " + b.by + ")"); });
+      lines.push("Total terbagi: " + rp(res.totalDistributed));
+      lines.push("");
+      lines.push("Dihitung dengan WARIS! berdasarkan QS An-Nisa 11, 12, 176 & KHI Pasal 176–193. Alat edukasi, bukan fatwa.");
+      var text = lines.join("\n");
+      function done(){ toast("Hasil disalin"); }
+      if (navigator.clipboard && navigator.clipboard.writeText){
+        navigator.clipboard.writeText(text).then(done, function(){ fallbackCopy(text); done(); });
+      } else { fallbackCopy(text); done(); }
+    }
+    function fallbackCopy(text){
+      var ta = document.createElement("textarea");
+      ta.value = text; ta.style.position = "fixed"; ta.style.opacity = "0";
+      document.body.appendChild(ta); ta.select();
+      try { document.execCommand("copy"); } catch(e){}
+      document.body.removeChild(ta);
+    }
+
+    /* ================= Simpan skenario & riwayat ================= */
+    function loadScenarios(){
+      try { var raw = localStorage.getItem(LS_KEY); var arr = raw ? JSON.parse(raw) : []; return Array.isArray(arr) ? arr : []; }
+      catch(e){ return []; }
+    }
+    function storeScenarios(arr){
+      try { localStorage.setItem(LS_KEY, JSON.stringify(arr)); } catch(e){}
+    }
+    function heirSummary(st){
+      var parts = [];
+      var lbl = { spouse: st.gender==="P" ? "Suami" : "Istri", son:"Anak laki-laki", daughter:"Anak perempuan", father:"Ayah", mother:"Ibu", grandfather:"Kakek", grandmother:"Nenek", fullM:"Sdr kandung L", fullF:"Sdr kandung P", patM:"Sdr seayah L", patF:"Sdr seayah P", matM:"Sdr seibu L", matF:"Sdr seibu P" };
+      COUNT_KEYS.forEach(function(k){ if (st.counts[k] > 0) parts.push(lbl[k] + " ×" + st.counts[k]); });
+      (st.repl||[]).forEach(function(r){ if (r.gm + r.gf >= 1) parts.push("Cucu pengganti ×" + (r.gm + r.gf)); });
+      return parts.length ? parts.join(" · ") : "—";
+    }
+    function openSaveModal(){
+      var inp = $("inp-scenario-name");
+      var tgl = new Date().toLocaleDateString("id-ID", { day:"numeric", month:"short", year:"numeric" });
+      inp.value = (S.name.trim() ? "Waris " + S.name.trim() : "Skenario") + " — " + tgl;
+      $("save-modal").classList.add("open");
+      setTimeout(function(){ inp.focus(); inp.select(); }, 50);
+    }
+    $("btn-save-cancel").addEventListener("click", function(){ $("save-modal").classList.remove("open"); });
+    $("save-modal").addEventListener("click", function(e){ if (e.target === this) this.classList.remove("open"); });
+    $("btn-save-confirm").addEventListener("click", function(){
+      var name = $("inp-scenario-name").value.trim() || "Skenario tanpa nama";
+      var arr = loadScenarios();
+      var snapshot = JSON.parse(JSON.stringify(S));
+      arr.unshift({
+        id: "sc" + Date.now(),
+        name: name,
+        date: new Date().toISOString(),
+        net: lastResult ? lastResult.waterfall.net : computeWaris(buildInput()).waterfall.net,
+        summary: heirSummary(S),
+        state: snapshot
+      });
+      storeScenarios(arr);
+      $("save-modal").classList.remove("open");
+      toast("Skenario tersimpan");
+    });
+
+    function renderHistory(){
+      var box = $("hist-list");
+      var arr = loadScenarios();
+      if (!arr.length){
+        box.innerHTML = '<div class="empty-state">Belum ada skenario tersimpan.</div>';
+        return;
+      }
+      box.innerHTML = "";
+      arr.forEach(function(item){
+        var d = new Date(item.date);
+        var tgl = isNaN(d) ? "" : d.toLocaleDateString("id-ID", { day:"numeric", month:"long", year:"numeric" });
+        var el = document.createElement("div");
+        el.className = "hist-item";
+        el.innerHTML =
+          '<div class="hi-name">' + escapeHTML(item.name) + "</div>" +
+          '<div class="hi-meta">' + tgl + " · Harta bersih " + rp(item.net) + "</div>" +
+          '<div class="hi-meta">' + escapeHTML(item.summary || "") + "</div>" +
+          '<div class="hi-actions">' +
+            '<button type="button" class="btn btn-ghost" data-load="' + item.id + '">Muat ke Kalkulator</button>' +
+            '<button type="button" class="btn btn-del" data-delhist="' + item.id + '" style="min-height:44px">Hapus</button>' +
+          "</div>";
+        box.appendChild(el);
+      });
+      box.querySelectorAll("[data-load]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          var item = loadScenarios().filter(function(x){ return x.id === btn.getAttribute("data-load"); })[0];
+          if (!item) return;
+          applyState(item.state);
+          switchTab("kalkulator");
+          runCompute(true);
+          toast("Skenario dimuat");
+        });
+      });
+      box.querySelectorAll("[data-delhist]").forEach(function(btn){
+        btn.addEventListener("click", function(){
+          if (btn.getAttribute("data-armed") === "1"){
+            var arr2 = loadScenarios().filter(function(x){ return x.id !== btn.getAttribute("data-delhist"); });
+            storeScenarios(arr2);
+            renderHistory();
+            toast("Skenario dihapus");
+          } else {
+            btn.setAttribute("data-armed", "1");
+            btn.textContent = "Yakin hapus?";
+            setTimeout(function(){ btn.removeAttribute("data-armed"); btn.textContent = "Hapus"; }, 3000);
+          }
+        });
+      });
+    }
+
+    function applyState(st){
+      S = JSON.parse(JSON.stringify(st));
+      if (!S.counts) S.counts = emptyCounts();
+      if (!S.repl) S.repl = [];
+      $("inp-nama").value = S.name || "";
+      $("gender-L").setAttribute("aria-pressed", S.gender==="L" ? "true" : "false");
+      $("gender-P").setAttribute("aria-pressed", S.gender==="P" ? "true" : "false");
+      setMoneyInput("inp-total", S.total); setMoneyInput("inp-makam", S.makam);
+      setMoneyInput("inp-utang", S.utang); setMoneyInput("inp-wasiat", S.wasiat);
+      $("inp-gono").checked = !!S.gono;
+      renderSteppers(); renderRepl(); refreshLive();
+    }
+
+    /* ================= Contoh kasus ================= */
+    var PRESETS = {
+      inti: { gender:"L", total:240000000, counts:{ spouse:1, son:2, daughter:1 } },
+      gharawain: { gender:"P", total:120000000, counts:{ spouse:1, father:1, mother:1 } },
+      awl: { gender:"L", total:270000000, counts:{ spouse:1, father:1, mother:1, daughter:2 } }
+    };
+    document.querySelectorAll("[data-preset]").forEach(function(card){
+      card.addEventListener("click", function(){
+        var p = PRESETS[card.getAttribute("data-preset")];
+        var st = { name:"", gender:p.gender, total:p.total, makam:0, utang:0, wasiat:0, gono:false, counts:emptyCounts(), repl:[] };
+        Object.keys(p.counts).forEach(function(k){ st.counts[k] = p.counts[k]; });
+        applyState(st);
+        switchTab("kalkulator");
+        runCompute(true);
+      });
+    });
+
+    /* ================= Init ================= */
+    renderSteppers();
+    renderRepl();
+    refreshLive();
+    renderHistory();
+    </script>
+
+    <script>
+    "use strict";
+    /* ================= SELF-TEST ENGINE (20 kasus uji) ================= */
+    (function runSelfTests(){
+      var failures = 0, total = 0;
+      function P(res, label){ for (var i=0;i<res.persons.length;i++) if (res.persons[i].label===label) return res.persons[i]; return null; }
+      function chk(name, actual, expect){
+        total++;
+        var ok = typeof actual === "number" && Math.abs(actual - expect) <= 2;
+        if (!ok){ failures++; console.error("[WARIS self-test] GAGAL: " + name + " — diperoleh " + actual + ", diharapkan " + expect); }
+        console.assert(ok, "WARIS self-test gagal: " + name);
+      }
+      function base(over){
+        var o = { gender:"L", total:0, makam:0, utang:0, wasiat:0, gono:false,
+          spouse:0, son:0, daughter:0, father:0, mother:0, grandfather:0, grandmother:0,
+          fullM:0, fullF:0, patM:0, patF:0, matM:0, matF:0, repl:[] };
+        Object.keys(over).forEach(function(k){ o[k] = over[k]; });
+        return o;
+      }
+      var r;
+      // 1
+      r = computeWaris(base({ total:240000000, spouse:1, son:2, daughter:1 }));
+      chk("Kasus 1 istri per orang", P(r,"Istri").totalAmt, 30000000);
+      chk("Kasus 1 anak laki-laki per orang", P(r,"Anak laki-laki").perAmt, 84000000);
+      chk("Kasus 1 anak perempuan", P(r,"Anak perempuan").totalAmt, 42000000);
+      // 2 (gharawain)
+      r = computeWaris(base({ gender:"P", total:120000000, spouse:1, father:1, mother:1 }));
+      chk("Kasus 2 suami", P(r,"Suami").totalAmt, 60000000);
+      chk("Kasus 2 ayah", P(r,"Ayah").totalAmt, 40000000);
+      chk("Kasus 2 ibu", P(r,"Ibu").totalAmt, 20000000);
+      chk("Kasus 2 gharawain", r.gharawain ? 1 : 0, 1);
+      // 3 (radd)
+      r = computeWaris(base({ total:240000000, spouse:1, mother:1, daughter:2 }));
+      chk("Kasus 3 istri", P(r,"Istri").totalAmt, 30000000);
+      chk("Kasus 3 ibu", P(r,"Ibu").totalAmt, 42000000);
+      chk("Kasus 3 anak perempuan per orang", P(r,"Anak perempuan").perAmt, 84000000);
+      // 4 ('awl)
+      r = computeWaris(base({ total:270000000, spouse:1, father:1, mother:1, daughter:2 }));
+      chk("Kasus 4 istri", P(r,"Istri").totalAmt, 30000000);
+      chk("Kasus 4 ayah", P(r,"Ayah").totalAmt, 40000000);
+      chk("Kasus 4 ibu", P(r,"Ibu").totalAmt, 40000000);
+      chk("Kasus 4 anak perempuan per orang", P(r,"Anak perempuan").perAmt, 80000000);
+      chk("Kasus 4 'awl", r.isAwl ? 1 : 0, 1);
+      // 5
+      r = computeWaris(base({ total:180000000, daughter:2, father:1 }));
+      chk("Kasus 5 anak perempuan per orang", P(r,"Anak perempuan").perAmt, 60000000);
+      chk("Kasus 5 ayah", P(r,"Ayah").totalAmt, 60000000);
+      // 6 (radd)
+      r = computeWaris(base({ gender:"P", total:120000000, spouse:1, daughter:1 }));
+      chk("Kasus 6 suami", P(r,"Suami").totalAmt, 30000000);
+      chk("Kasus 6 anak perempuan", P(r,"Anak perempuan").totalAmt, 90000000);
+      // 7
+      r = computeWaris(base({ total:90000000, fullM:1, fullF:1 }));
+      chk("Kasus 7 saudara kandung laki-laki", P(r,"Saudara kandung laki-laki").totalAmt, 60000000);
+      chk("Kasus 7 saudara kandung perempuan", P(r,"Saudara kandung perempuan").totalAmt, 30000000);
+      // 8 (radd)
+      r = computeWaris(base({ total:120000000, mother:1, matM:1 }));
+      chk("Kasus 8 ibu", P(r,"Ibu").totalAmt, 80000000);
+      chk("Kasus 8 saudara seibu", P(r,"Saudara seibu").totalAmt, 40000000);
+      // 9 (gono-gini + waterfall)
+      r = computeWaris(base({ total:400000000, gono:true, makam:10000000, utang:30000000, wasiat:20000000, spouse:1, son:1 }));
+      chk("Kasus 9 gono-gini", r.waterfall.gg, 200000000);
+      chk("Kasus 9 harta bersih", r.waterfall.net, 140000000);
+      chk("Kasus 9 istri", P(r,"Istri").totalAmt, 17500000);
+      chk("Kasus 9 anak laki-laki", P(r,"Anak laki-laki").totalAmt, 122500000);
+      // 10 (pengganti anak laki-laki)
+      r = computeWaris(base({ total:150000000, daughter:1, repl:[{ type:"son", gm:1, gf:1 }] }));
+      chk("Kasus 10 anak perempuan", P(r,"Anak perempuan").totalAmt, 50000000);
+      chk("Kasus 10 cucu laki-laki", P(r,"Cucu laki-laki").totalAmt, 66666667);
+      chk("Kasus 10 cucu perempuan", P(r,"Cucu perempuan").totalAmt, 33333333);
+      // 11 (hanya istri)
+      r = computeWaris(base({ total:100000000, spouse:1 }));
+      chk("Kasus 11 istri saja", P(r,"Istri").totalAmt, 100000000);
+      // 12 (ayah saja)
+      r = computeWaris(base({ total:100000000, father:1 }));
+      chk("Kasus 12 ayah saja", P(r,"Ayah").totalAmt, 100000000);
+      // 13 (anak perempuan saja, radd)
+      r = computeWaris(base({ total:100000000, daughter:1 }));
+      chk("Kasus 13 anak perempuan saja", P(r,"Anak perempuan").totalAmt, 100000000);
+      // 14 (kakek asabah)
+      r = computeWaris(base({ total:120000000, grandfather:1, mother:1 }));
+      chk("Kasus 14 ibu", P(r,"Ibu").totalAmt, 40000000);
+      chk("Kasus 14 kakek", P(r,"Kakek").totalAmt, 80000000);
+      // 15 (ayah 1/6 + sisa)
+      r = computeWaris(base({ total:240000000, spouse:1, father:1, daughter:1 }));
+      chk("Kasus 15 istri", P(r,"Istri").totalAmt, 30000000);
+      chk("Kasus 15 anak perempuan", P(r,"Anak perempuan").totalAmt, 120000000);
+      chk("Kasus 15 ayah", P(r,"Ayah").totalAmt, 90000000);
+      // 16 (wasiat dicap 1/3)
+      r = computeWaris(base({ total:90000000, wasiat:40000000, spouse:1, son:1 }));
+      chk("Kasus 16 wasiat dipakai", r.waterfall.wasiat, 30000000);
+      chk("Kasus 16 harta bersih", r.waterfall.net, 60000000);
+      chk("Kasus 16 istri", P(r,"Istri").totalAmt, 7500000);
+      chk("Kasus 16 anak laki-laki", P(r,"Anak laki-laki").totalAmt, 52500000);
+      // 17 ('awl)
+      r = computeWaris(base({ total:240000000, spouse:1, mother:1, fullF:1 }));
+      chk("Kasus 17 istri", P(r,"Istri").totalAmt, 55384615);
+      chk("Kasus 17 ibu", P(r,"Ibu").totalAmt, 73846154);
+      chk("Kasus 17 saudara kandung perempuan", P(r,"Saudara kandung perempuan").totalAmt, 110769231);
+      // 18 (hanya cucu pengganti)
+      r = computeWaris(base({ total:90000000, repl:[{ type:"son", gm:1, gf:0 }] }));
+      chk("Kasus 18 cucu laki-laki", P(r,"Cucu laki-laki").totalAmt, 90000000);
+      // 19 (pengganti anak perempuan + radd)
+      r = computeWaris(base({ total:120000000, mother:1, repl:[{ type:"daughter", gm:0, gf:2 }] }));
+      chk("Kasus 19 ibu", P(r,"Ibu").totalAmt, 30000000);
+      chk("Kasus 19 cucu perempuan total", P(r,"Cucu perempuan").totalAmt, 90000000);
+      chk("Kasus 19 cucu perempuan per orang", P(r,"Cucu perempuan").perAmt, 45000000);
+      // 20
+      r = computeWaris(base({ gender:"P", total:120000000, spouse:1, mother:1, matM:1, matF:1 }));
+      chk("Kasus 20 suami", P(r,"Suami").totalAmt, 60000000);
+      chk("Kasus 20 ibu", P(r,"Ibu").totalAmt, 20000000);
+      chk("Kasus 20 saudara seibu total", P(r,"Saudara seibu").totalAmt, 40000000);
+
+      if (failures > 0){
+        console.error("[WARIS self-test] " + failures + " dari " + total + " pemeriksaan GAGAL.");
+        var el = document.getElementById("selftest-fail");
+        if (el) el.style.display = "block";
+      } else {
+        console.log("[WARIS self-test] Semua " + total + " pemeriksaan pada 20 kasus uji LULUS.");
+      }
+    })();
+    </script>
+  </body>
+</html>
